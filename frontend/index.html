@@ -39,6 +39,31 @@
         </form>
       </div>
     </template>
+    <template id="register-page">
+      <div class="w-full h-screen flex justify-center items-center">
+        <form class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+          <div class="card-body">
+            <h2 class="text-primary font-bold text-2xl text-center">Register</h2>
+            <fieldset class="fieldset">
+              <label class="label" for="register-name">Name</label>
+              <input type="text" class="input" placeholder="Name" required id="register-name" />
+
+              <label class="label" for="register-email">Email</label>
+              <input type="email" class="input" placeholder="Email" required id="register-email" />
+
+              <label class="label" for="register-password">Password</label>
+              <input type="password" class="input" placeholder="Password" required id="register-password" />
+
+              <label class="label" for="register-password-confirm">Retype password</label>
+              <input type="password" class="input" placeholder="Retype Password" required id="register-password-confirm" />
+
+              <div>Already have an account? <a class="link link-primary" id="login-link">Login here</a></div>
+              <button class="btn btn-primary mt-4" id="register-submit">Register</button>
+            </fieldset>
+          </div>
+        </form>
+      </div>
+    </template>
     <script type="module" src="src/main.js"></script>
   </body>
 

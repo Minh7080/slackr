@@ -15,19 +15,30 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
-    <script type="module" src="src/helpers.js"></script>
   </head>
 
   <body>
-    <!-- This is an example app structure, you can modify this as much as you choose -->
-    <header class="banner">
-      <h1>Slackr</h1>
-    </header>
 
     <main role="main">
-      <!-- app goes here -->
     </main>
 
+    <template id="login-page">
+      <div class="w-full h-screen flex justify-center items-center">
+        <form class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+          <div class="card-body">
+            <h2 class="text-primary font-bold text-2xl text-center">Login</h2>
+            <fieldset class="fieldset">
+              <label class="label" for="login-email">Email</label>
+              <input type="email" class="input" placeholder="Email" required id="login-email" />
+              <label class="label" for="login-password">Password</label>
+              <input type="password" class="input" placeholder="Password" required id="login-password" />
+              <div>Don't have an account? <a class="link link-primary" id="register-link">Register here</a></div>
+              <button class="btn btn-primary mt-4" id="login-submit">Login</button>
+            </fieldset>
+          </div>
+        </form>
+      </div>
+    </template>
     <script type="module" src="src/main.js"></script>
   </body>
 

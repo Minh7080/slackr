@@ -1,5 +1,10 @@
-import { BACKEND_PORT } from './config.js';
-// A helper you may want to use when uploading new images to the server.
-import { fileToDataUrl } from './helpers.js';
+import { ToastError } from './components/ToastError.js';
+import { HomePage } from './pages/HomePage.js';
+import { LoginPage } from './pages/LoginPage.js';
 
-console.log('Let\'s go!');
+localStorage.getItem('token') ? HomePage() : LoginPage();
+/* window.addEventListener('keydown', e => {
+  if (e.key === 'k') {
+    ToastError('test');
+  }
+}) */

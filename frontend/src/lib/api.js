@@ -20,6 +20,7 @@ const register = (email, password, name) => {
         return Promise.reject(data);
       } else {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.userId);
         return data;
       }
     })
@@ -41,6 +42,7 @@ const login = (email, password) => {
         return Promise.reject(data);
       } else {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.userId);
         return data;
       }
     })
@@ -80,7 +82,31 @@ const getChannels = () => {
         ToastError(data.error);
         return Promise.reject(data);
       } else {
-        return data.channels;
+        return data.channels.filter(x => x.members.includes(parseInt(localStorage.getItem('userId'))) || x.private === false);
+      }
+    }))
+}
+
+const createChannel = (name, isPrivate, description) => {
+  return fetch(`${baseURL}/channel`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({
+      name: name,
+      private: isPrivate,
+      description: description
+    })
+  })
+    .then(res => res.json())
+    .then((data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data.channelId;
       }
     }))
 }
@@ -90,4 +116,5 @@ export {
   login,
   logout,
   getChannels,
+  createChannel
 }

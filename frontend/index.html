@@ -97,6 +97,7 @@
     </template>
 
     <template id="sidebar-component">
+
       <div class="menu bg-base-200 w-80 px-5 py-2 text-base-content overflow-y-auto h-full">
         <ul>
           <li>
@@ -121,7 +122,36 @@
       </li>
     </template>
 
+    <template id="create-channel-modal-component">
+      <form class="modal-box" id="create-channel-container" method="submit">
+        <fieldset class="fieldset">
+          <h3 class="text-lg font-bold">Create new channel</h3>
 
+          <label for="create-channel-name" class="label">Name</label>
+          <input type="text" id="create-channel-name" class="input w-full" required pattern=".*\S.*">
+          <br>
+
+          <label for="create-channel-description" class="label">Description (optional)</label>
+          <textarea id="create-channel-description" class="textarea w-full"></textarea>
+          <br>
+
+          <div class="flex justify-between">
+            <label for="create-channel-is-private" class="label">
+              <svg class="relative" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-keyhole-icon lucide-lock-keyhole"><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>
+              Private Channel
+            </label>
+            <label class="toggle" for="create-channel-is-private">
+              <input type="checkbox" id="create-channel-is-private" checked />
+              <svg
+                aria-label="disabled"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
     <template id="error-toast-component">
       <div class="alert alert-error transition duration-200 ease-out">
         <span id="error-body">message</span>

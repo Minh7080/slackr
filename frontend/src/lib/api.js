@@ -66,8 +66,28 @@ const logout = () => {
     }))
 }
 
+const getChannels = () => {
+  return fetch(`${baseURL}/channel`, {
+    method: 'GET',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => res.json())
+    .then((data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data.channels;
+      }
+    }))
+}
+
 export {
   register,
   login,
   logout,
+  getChannels,
 }

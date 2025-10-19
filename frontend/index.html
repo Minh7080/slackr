@@ -79,10 +79,50 @@
     </template>
 
     <template id="home-page">
-      <p>Dashboard</p>
-      <div id="dashboard-container"></div>
-      <button class="btn btn-error" id="logout-button">Logout</button>
+      <div class="flex flex-col h-screen overflow-hidden">
+        <header class="flex place-content-between px-4 lg:px-7 py-2 bg-base-300" >
+          <h1 class="font-bold text-3xl text-primary">Slack<span class="text-secondary">r</span></h1>
+          <button class="btn btn-outline btn-error" id="logout-button">Logout</button>
+        </header>
+        <div class="flex grow overflow-hidden">
+          <div id="sidebar-mountpoint">
+            <!-- Sidebar -->
+          </div>
+
+          <div class="flex flex-col w-full p-4 justify-between">
+            <div class="border-b border-base-300 px-2 pb-2">
+              <h2 class="font-bold text-2xl">Channel title</h2>
+            </div>
+            <div class="grow h-full overflow-y-auto">
+            </div>
+            <div class="bg-red-500">
+              <input type="text" class="w-full">
+            </div>
+          </div>
+
+        </div>
+      </div>
     </template>
+
+    <template id="sidebar-component">
+      <div class="menu bg-base-200 w-80 px-5 py-2 text-base-content overflow-y-auto h-full">
+        <ul>
+          <li>
+            <h2 class="menu-title">Channels</h2>
+            <ul id="channel-list">
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </template>
+
+    <template id="channel-entry-component">
+      <li class="channel-container">
+        <a class="flex justify-between">
+        </a>
+      </li>
+    </template>
+
 
     <template id="error-toast-component">
       <div class="alert alert-error transition duration-200 ease-out">

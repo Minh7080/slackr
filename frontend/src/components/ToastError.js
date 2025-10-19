@@ -11,7 +11,7 @@ export const ToastError = (message) => {
     setTimeout(() => {toastElement.remove()}, 200);
   };
 
-  container.appendChild(toast);
+  container.prepend(toast);
   content.innerText = message;
   closeBtn.addEventListener('click', () => remove());
   setTimeout(() => remove(), 3000);

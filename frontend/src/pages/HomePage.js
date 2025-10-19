@@ -1,4 +1,6 @@
+import { Sidebar } from "../components/Sidebar.js";
 import { logout } from "../lib/api.js";
+import { useState } from "../lib/hooks.js";
 import { LoginPage } from "./LoginPage.js";
 
 export const HomePage = () => {
@@ -10,4 +12,8 @@ export const HomePage = () => {
   logoutBtn.addEventListener('click', () => {
     logout().finally(() => LoginPage());
   });
+
+  const [getSelectedChannel, setSelectedChannel, subSelectedChannel] = useState(null);
+
+  Sidebar(setSelectedChannel, subSelectedChannel);
 }

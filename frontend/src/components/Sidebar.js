@@ -1,4 +1,5 @@
 import { getChannels } from "../lib/api.js";
+import { CreateChannelModal } from "./CreateChannelModal.js";
 
 const unsubscribers = [];
 
@@ -10,17 +11,16 @@ export const Sidebar = (setSelectedChannel, subSelectedChannel) => {
   mountpoint.replaceChildren(sidebar);
 
   const channelList = document.getElementById('channel-list');
+  const createChannelBtn = document.getElementById('create-channel-button');
 
-  const createChannel = (name, id, isPrivate) => {
+  const createChannelElement = (name, id, isPrivate) => {
     const channelTemplate = document.getElementById('channel-entry-component').content.cloneNode(true);
     const anchor = channelTemplate.querySelector('a');
     const channelHTML = channelTemplate.querySelector('li');
 
     anchor.prepend(document.createTextNode(name));
     if (isPrivate) {
-      const img = document.createElement('img');
-      img.src = '../../assets/lock.svg'
-      anchor.appendChild(img);
+      anchor.querySelector('svg').classList.remove('hidden');
     }
 
     return {
@@ -29,23 +29,32 @@ export const Sidebar = (setSelectedChannel, subSelectedChannel) => {
     };
   }
 
-  getChannels()
-    .then(data => data.forEach(x => {
-      const channel = createChannel(x.name, x.id);
+  const doGetChannels = () => {
+    channelList.replaceChildren();
+    getChannels()
+      .then(data => data.forEach(x => {
+        const channel = createChannelElement(x.name, x.id, x.private);
 
-      channel.getElement().addEventListener('click', () => {
-        setSelectedChannel(x);
-      });
+        channel.getElement().addEventListener('click', () => {
+          setSelectedChannel(x);
+        });
 
-      const unsub = subSelectedChannel(value => {
-        if (value.id === channel.getId()) {
-          channel.getElement().classList.add('menu-active');
-        } else {
-          channel.getElement().classList.remove('menu-active');
-        }
-      })
+        const unsub = subSelectedChannel(value => {
+          if (value.id === channel.getId()) {
+            channel.getElement().children[0].classList.add('menu-active');
+          } else {
+            channel.getElement().children[0].classList.remove('menu-active');
+          }
+        })
 
-      channelList.appendChild(channel.getElement());
-      unsubscribers.push(unsub);
-    }));
+        channelList.appendChild(channel.getElement());
+        unsubscribers.push(unsub);
+      }));
+  }
+  
+  createChannelBtn.addEventListener('click', () => {
+    CreateChannelModal(doGetChannels);
+  })
+
+  doGetChannels();
 }

@@ -126,9 +126,52 @@
           </ul>
         </ul>
 
+        <div class="contents" id="channel-details-mountpoint">
+        </div>
+        <div class="bg-base-300 h-15 rounded-box shadow-md flex justify-between items-center px-3 w-full">
+          <div class="flex gap-3 items-center">
+            <div class="avatar">
+              <div class="w-8 rounded">
+                <img src="assets/avatar.svg" alt="avatar">
+              </div>
+            </div>
+            <p>proife</p>
+          </div>
+          <button id="logout-button" class="btn btn-error btn-square btn-sm btn-outline"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg></button>
+        </div>
       </div>
     </template>
 
+    <template id="channel-details-component">
+      <div class="min-h-40 max-h-100 bg-base-300 rounded-box shadow-md flex flex-col w-full" id="channel-details-container">
+        <h2 class="menu-title text-lg flex justify-between items-center flex-shrink-0 p-4 pb-2">
+          <span class="truncate w-full" id="channel-details-name">Server Name</span>
+          <button class="btn btn-xs btn-square btn-outline flex-shrink-0" title="Edit this channel" id="channel-details-edit-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+          </button>
+        </h2>
+
+        <div class="flex-grow overflow-y-auto px-6" id="channel-details-description">
+          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ad, aspernatur vitae accusamus saepe, maiores at ex porro neque nihil optio debitis labore voluptatum voluptatibus aperiam illum, nostrum consequatur dolore. Rem.</p>
+        </div>
+
+        <div class="flex-shrink-0 px-6 pb-4 space-y-2">
+          <hr class="my-2">
+          <div class="contents" id="channel-details-profile-mountpoint">
+          </div>
+          <hr class="my-2">
+          <div class="flex gap-2 items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+            <p id="channel-details-date">Created Sep 10, 2025</p>
+          </div>
+          <div class="flex gap-2 items-center" id="channel-details-visibility">
+            <svg class="hidden" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-keyhole-icon lucide-lock-keyhole"><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe-icon lucide-globe"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <p>Public</p>
+          </div>
+        </div>
+      </div>
+    </template>
     <template id="channel-entry-component">
       <li class="channel-container">
         <a class="flex justify-between">

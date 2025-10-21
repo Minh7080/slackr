@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-labelledby="title desc">
+  <title id="title">Default user profile</title>
+  <desc id="desc">A colorful square avatar with a simple user silhouette</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7DD3FC"/>
+      <stop offset="1" stop-color="#C084FC"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background square -->
+  <rect width="128" height="128" rx="16" fill="url(#bg)" />
+
+  <!-- Silhouette -->
+  <circle cx="64" cy="44" r="20" fill="white" opacity="0.9"/>
+  <path d="M28 108c0-20 16-36 36-36s36 16 36 36H28z" fill="white" opacity="0.9"/>
+</svg>

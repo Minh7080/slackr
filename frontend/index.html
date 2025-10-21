@@ -101,10 +101,31 @@
         <button class="btn btn-outline">Leave channel</button>
       </div>
 
-            <ul id="channel-list">
-            </ul>
-          </li>
+      <div class="contents">
+        <div class="grow h-full overflow-y-auto">
+        </div>
+        <div>
+          <textarea class="w-full min-h-10 max-h-40 textarea overflow-auto resize-none"></textarea>
+        </div>
+      </div>
+    </template>
+
+    <template id="sidebar-component">
+      <div class="bg-base-100 w-80 p-4 text-base-content h-full flex flex-col gap-3 border-r-2 border-base-300 items-center">
+        <div class="bg-primary-content flex flex-col justify-center items-center py-1 px-5 rounded-box w-25 shadow-sm">
+          <h1 class="text-center text-2xl font-bold text-primary">Slack<span class="text-secondary">r</span></h1>
+        </div>
+        <ul class=" menu flex-1 flex flex-col min-h-0 w-full bg-base-300 rounded-box shadow-md">
+          <h2 class="menu-title text-lg flex justify-between items-center flex-shrink-0">
+            Channels 
+            <button class="btn btn-xs btn-square btn-outline" title="Create new channel" id="create-channel-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            </button>
+          </h2>
+          <ul id="channel-list" class="overflow-y-auto flex-1 min-h-0 mx-3">
+          </ul>
         </ul>
+
       </div>
     </template>
 

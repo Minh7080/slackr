@@ -14,6 +14,11 @@ export const CreateChannelModal = (doGetChannels) => {
 
   cancelBtn.addEventListener('click', () => mountpoint.close());
 
+  description.addEventListener('input', () => {
+    description.style.height = 'auto';
+    description.style.height = description.scrollHeight + 'px';
+  })
+
   name.addEventListener('blur', () => {
     if (!name.checkValidity()) {
       name.classList.add('input-error');

@@ -172,6 +172,21 @@
         </div>
       </div>
     </template>
+
+    <template id="profile-component">
+      <div class="flex gap-3 items-center hover:cursor-pointer">
+        <div class="avatar">
+          <div class="w-8 rounded">
+            <img src="assets/avatar.svg" alt="avatar">
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <p>proife</p>
+          <small>profile@mail.com</small>
+        </div>
+      </div>
+    </template>
+
     <template id="channel-entry-component">
       <li class="channel-container">
         <a class="flex justify-between">
@@ -190,7 +205,7 @@
           <br>
 
           <label for="create-channel-description" class="label">Description (optional)</label>
-          <textarea id="create-channel-description" class="textarea w-full"></textarea>
+          <textarea id="create-channel-description" class="textarea w-full min-h-20 max-h-60 resize-none"></textarea>
           <br>
 
           <div class="flex justify-between">
@@ -229,6 +244,26 @@
           <div class="modal-action">
             <button class="btn btn-error btn-outline" id="create-channel-cancel" type="button">Cancel</button>
             <button class="btn btn-primary" id="create-channel-submit" type="submit">Create channel</button>
+          </div>
+        </fieldset>
+      </form>
+    </template>
+
+    <template id="edit-channel-modal-component">
+      <form class="modal-box" method="submit">
+        <fieldset class="fieldset">
+          <h3 class="text-lg font-bold">Edit Channel Details</h3>
+
+          <label for="edit-channel-name" class="label">Name</label>
+          <input type="text" id="edit-channel-name" class="input w-full" required pattern=".*\S.*">
+          <br>
+
+          <label for="edit-channel-description" class="label">Description (optional)</label>
+          <textarea id="edit-channel-description" class="textarea w-full min-h-20 max-h-60 resize-none"></textarea>
+          <br>
+          <div class="modal-action">
+            <button class="btn btn-error btn-outline" id="edit-channel-cancel" type="button">Cancel</button>
+            <button class="btn btn-primary" id="edit-channel-submit" type="submit">Confirm Changes</button>
           </div>
         </fieldset>
       </form>

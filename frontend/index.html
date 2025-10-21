@@ -14,10 +14,12 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="scrollbar-hide.css">
   </head>
 
-  <body data-theme="corporate">
-    <div class="toast toast-top toast-center" id="toast-container">
+  <body data-theme="light">
+    <div class="toast toast-top toast-center z-10" id="toast-container">
     </div>
 
     <dialog class="modal" id="modal-container">
@@ -72,40 +74,32 @@
 
     <template id="home-page">
       <div class="flex flex-col h-screen overflow-hidden">
-        <header class="flex place-content-between px-4 lg:px-7 py-2 bg-base-300" >
-          <h1 class="font-bold text-3xl text-primary">Slack<span class="text-secondary">r</span></h1>
-          <button class="btn btn-outline btn-error" id="logout-button">Logout</button>
-        </header>
         <div class="flex grow overflow-hidden">
           <div id="sidebar-mountpoint">
             <!-- Sidebar -->
           </div>
 
-          <div class="flex flex-col w-full p-4 justify-between">
-            <div class="border-b border-base-300 px-2 pb-2">
-              <h2 class="font-bold text-2xl">Channel title</h2>
-            </div>
-            <div class="grow h-full overflow-y-auto">
-            </div>
-            <div class="bg-red-500">
-              <input type="text" class="w-full">
-            </div>
+          <div class="flex flex-col w-full p-4 justify-between" id="message-dashboard-mountpoint">
           </div>
 
         </div>
       </div>
     </template>
 
-    <template id="sidebar-component">
+    <template id="message-dashboard-warning-component">
+      <div class="flex h-full justify-center items-center flex-col gap-8">
+        <div class="bg-primary-content flex flex-col justify-center items-center gap-8 py-5 px-10 shadow-md rounded-box">
+          <h1 class="text-center text-8xl font-bold text-primary">Slack<span class="text-secondary">r</span></h1>
+        </div>
+        <p class="text-neutral text-lg">Select a channel to begin</p>
+      </div>
+    </template>
 
-      <div class="menu bg-base-200 w-80 px-5 py-2 text-base-content overflow-y-auto h-full">
-        <ul>
-          <li>
-            <h2 class="menu-title text-lg flex justify-between items-center">Channels 
-              <button class="btn btn-xs btn-square btn-outline" title="Create new channel" id="create-channel-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-              </button>
-            </h2>
+    <template id="message-dashboard-component">
+      <div class="border-b-2 border-base-300 px-2 pb-2 flex justify-between">
+        <h2 class="font-bold text-2xl" id="message-dashboard-channel-name">Channel title</h2>
+        <button class="btn btn-outline">Leave channel</button>
+      </div>
 
             <ul id="channel-list">
             </ul>

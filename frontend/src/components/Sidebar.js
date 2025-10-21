@@ -1,9 +1,10 @@
 import { getChannels } from "../lib/api.js";
+import { ChannelDetails } from "./ChannelDetails.js";
 import { CreateChannelModal } from "./CreateChannelModal.js";
 
 const unsubscribers = [];
 
-export const Sidebar = (setSelectedChannel, subSelectedChannel) => {
+export const Sidebar = (setSelectedChannel, subSelectedChannel, getSelectedChannel) => {
   unsubscribers.forEach(unsub => unsub());
 
   const mountpoint = document.getElementById('sidebar-mountpoint');
@@ -35,10 +36,6 @@ export const Sidebar = (setSelectedChannel, subSelectedChannel) => {
       .then(data => data.forEach(x => {
         const channel = createChannelElement(x.name, x.id, x.private);
 
-        channel.getElement().addEventListener('click', () => {
-          setSelectedChannel(x);
-        });
-
         const unsub = subSelectedChannel(value => {
           if (value.id === channel.getId()) {
             channel.getElement().children[0].classList.add('menu-active');
@@ -47,14 +44,25 @@ export const Sidebar = (setSelectedChannel, subSelectedChannel) => {
           }
         })
 
+        channel.getElement().addEventListener('click', () => {
+          setSelectedChannel(x);
+        });
+
+        if (getSelectedChannel()?.id === channel.getId()) {
+          channel.getElement().children[0].classList.add('menu-active');
+        } else {
+          channel.getElement().children[0].classList.remove('menu-active');
+        }
+
         channelList.appendChild(channel.getElement());
         unsubscribers.push(unsub);
-      }));
+      }))
   }
-  
+
   createChannelBtn.addEventListener('click', () => {
     CreateChannelModal(doGetChannels);
   })
 
+  ChannelDetails(subSelectedChannel, getSelectedChannel, doGetChannels);
   doGetChannels();
 }

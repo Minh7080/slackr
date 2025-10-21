@@ -57,7 +57,7 @@ const logout = () => {
     }
   })
     .then(res => res.json())
-    .then((data => {
+    .then(data => {
       if (data.error) {
         ToastError(data.error);
         localStorage.removeItem('token');
@@ -65,7 +65,7 @@ const logout = () => {
       } else {
         localStorage.removeItem('token');
       }
-    }))
+    });
 }
 
 const getChannels = () => {
@@ -77,14 +77,14 @@ const getChannels = () => {
     }
   })
     .then(res => res.json())
-    .then((data => {
+    .then(data => {
       if (data.error) {
         ToastError(data.error);
         return Promise.reject(data);
       } else {
         return data.channels.filter(x => x.members.includes(parseInt(localStorage.getItem('userId'))) || x.private === false);
       }
-    }))
+    });
 }
 
 const createChannel = (name, isPrivate, description) => {
@@ -101,14 +101,75 @@ const createChannel = (name, isPrivate, description) => {
     })
   })
     .then(res => res.json())
-    .then((data => {
+    .then(data => {
       if (data.error) {
         ToastError(data.error);
         return Promise.reject(data);
       } else {
         return data.channelId;
       }
-    }))
+    });
+};
+
+const getChannelDetails = (channedId) => {
+  return fetch(`${baseURL}/channel/${channedId}`, {
+    method: 'GET',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+};
+
+const editChannelDetails = (channedId, newName, newDescription) => {
+  return fetch(`${baseURL}/channel/${channedId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({
+      name: newName,
+      description: newDescription
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+};
+
+const getUserDetails = (userId) => {
+  return fetch(`${baseURL}/user/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
 }
 
 export {
@@ -116,5 +177,8 @@ export {
   login,
   logout,
   getChannels,
-  createChannel
+  createChannel,
+  getChannelDetails,
+  editChannelDetails,
+  getUserDetails,
 }

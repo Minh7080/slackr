@@ -26,7 +26,10 @@ export const HomePage = () => {
       return;
     }
 
-    if (!getChannels().find(x => x.id === getSelectedChannelId()).members.includes(parseInt(localStorage.getItem('userId')))) {
+    const isUserInChannel = getChannels().find(x => x.id === getSelectedChannelId())?.members.includes(parseInt(localStorage.getItem('userId')));
+
+    if (!isUserInChannel) {
+      console.log(getChannels());
       MessageDashboardUnaccessable({ setChannels, subChannels, getSelectedChannelId });
       return;
     }

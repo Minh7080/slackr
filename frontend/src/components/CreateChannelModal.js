@@ -1,6 +1,6 @@
-import { createChannel } from "../lib/api.js";
+import { createChannel, getChannels } from "../lib/api.js";
 
-export const CreateChannelModal = (doGetChannels) => {
+export const CreateChannelModal = ({ setChannels }) => {
   const mountpoint = document.getElementById('modal-container');
   const modal = document.getElementById('create-channel-modal-component').content.cloneNode(true);
   mountpoint.replaceChildren(modal);
@@ -30,7 +30,12 @@ export const CreateChannelModal = (doGetChannels) => {
   form.addEventListener('submit', e => {
     e.preventDefault();
     createChannel(name.value, isPrivate.checked, description.value)
-      .then(doGetChannels());
+      .then(() => { 
+        getChannels()
+          .then(data => {
+            setChannels(data);
+          })
+      });
     mountpoint.close();
   });
 }

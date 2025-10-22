@@ -1,6 +1,6 @@
-import { editChannelDetails, getChannelDetails } from '../lib/api.js';
+import { editChannelDetails, getChannelDetails, getChannels } from '../lib/api.js';
 
-export const EditChannelModal = (doGetChannels, getSelectedChannel, doGetChannelDetails, setSelectedChannel ) => {
+export const EditChannelModal = ({ setChannels, updateChannelDetails, getSelectedChannelId }) => {
   const mountpoint = document.getElementById('modal-container');
   const modal = document.getElementById('edit-channel-modal-component').content.cloneNode(true);
   mountpoint.replaceChildren(modal);
@@ -29,7 +29,7 @@ export const EditChannelModal = (doGetChannels, getSelectedChannel, doGetChannel
     }
   });
 
-  getChannelDetails(getSelectedChannel().id).then(data => {
+  getChannelDetails(getSelectedChannelId()).then(data => {
     name.value = data.name;
     description.value = data.description;
     description.style.height = description.scrollHeight + 'px';
@@ -38,10 +38,9 @@ export const EditChannelModal = (doGetChannels, getSelectedChannel, doGetChannel
 
   form.addEventListener('submit', e => {
     e.preventDefault();
-    editChannelDetails(getSelectedChannel().id, name.value, description.value)
-      .then(() => setSelectedChannel({...getSelectedChannel(), ...{name: name.value}}))
-      .then(doGetChannels)
-      .then(() => doGetChannelDetails(getSelectedChannel()))
+    editChannelDetails(getSelectedChannelId(), name.value, description.value)
+      .then(() => getChannels().then(data => setChannels(data)))
+      .then(() => updateChannelDetails(getSelectedChannelId()))
       .then(() => mountpoint.close());
   });
 }

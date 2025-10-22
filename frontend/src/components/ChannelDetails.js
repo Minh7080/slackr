@@ -5,7 +5,7 @@ import { Profile } from "./Profile.js";
 
 const unsubscribers = [];
 
-export const ChannelDetails = (subSelectedChannel, getSelectedChannel, doGetChannels, setSelectedChannel) => {
+export const ChannelDetails = ({ subSelectedChannelId, setChannels, getSelectedChannelId, subChannels }) => {
   unsubscribers.forEach(unsub => unsub());
   unsubscribers.length = 0;
 
@@ -55,14 +55,15 @@ export const ChannelDetails = (subSelectedChannel, getSelectedChannel, doGetChan
     }
   }
 
-  const doGetChannelDetails = (selectedChannel) => {
-    if (!selectedChannel || !selectedChannel.members.includes(parseInt(localStorage.getItem('userId')))){
+  const updateChannelDetails = (selectedChannelId) => {
+    /* if (!selectedChannel || !selectedChannel.members.includes(parseInt(localStorage.getItem('userId')))){
       channelDetailsElement.classList.add('hidden');
       return;
-    }
-
-    getChannelDetails(selectedChannel.id)
+    } */
+    if (selectedChannelId === -1) return;
+    getChannelDetails(selectedChannelId)
       .then(data => {
+        channelDetailsElement.classList.remove('hidden')
         name.textContent = data.name;
         setDescription(data.description);
         setDate(data.createdAt);
@@ -70,14 +71,19 @@ export const ChannelDetails = (subSelectedChannel, getSelectedChannel, doGetChan
         Profile(data.creator, 'channel-details-profile-mountpoint');
       })
       .catch(() => channelDetailsElement.classList.add('hidden'))
-      .then(() =>channelDetailsElement.classList.remove('hidden'));
   }
 
-  unsubscribers.push(subSelectedChannel(selectedChannel => {
-    doGetChannelDetails(selectedChannel);
-  }));
+  unsubscribers.push(subSelectedChannelId(selectedChannelId => {
+    updateChannelDetails(selectedChannelId);
+  }))
 
-  updateChannelBtn.addEventListener('click', () => EditChannelModal(doGetChannels, getSelectedChannel, doGetChannelDetails, setSelectedChannel));
+  unsubscribers.push(subChannels(() => updateChannelDetails(getSelectedChannelId())))
 
-  doGetChannelDetails(getSelectedChannel());
+  // unsubscribers.push(subSelectedChannel(selectedChannel => {
+  //   updateChannelDetails(selectedChannel);
+  // }));
+
+  updateChannelBtn.addEventListener('click', () => EditChannelModal({ setChannels, updateChannelDetails, getSelectedChannelId }));
+
+  // updateChannelDetails(getSelectedChannel());
 };

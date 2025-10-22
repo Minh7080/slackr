@@ -1,5 +1,5 @@
 ## 0. Change Log
-N/A
+1021 - Update the pre-commit script and update 2.2.2 on defining the way to trigger the create channel button
 
 # Assessment 3 - Vanilla JS: Slackr
 
@@ -66,8 +66,7 @@ Milestone 2 focuses on creating **channels**, and viewing the basic channel scre
 
 #### 2.2.2 Creating a new channel
  * Users should be able to create a new channel via some kind of form.
- * The trigger [`DOMElement` with id: `create-channel-button`] to display the form should be accessible on dashboard screen without any clicks.
- * The trigger to display the form [`DOMElement` with id: `create-channel-container`] should be accessible on any screen with no more than 2 clicks.
+ * The trigger [`DOMElement` with id: `create-channel-button`] to display the form [DOMElement with id: create-channel-container] should be accessible on dashboard screen without any clicks.
  * Users should be able to enter the name [`Input` with id: `create-channel-name`], an optional description [`DOMElement` with id: `create-channel-description`], public/private channel type [`Input` with `checkbox` type and id: `create-channel-is-private`], and a submit button [`DOMElement` with id `create-channel-submit`].
  * **Note: the description should be optional for the user but the backend requires a description.**
 

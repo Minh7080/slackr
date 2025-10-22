@@ -172,6 +172,45 @@ const getUserDetails = (userId) => {
     });
 }
 
+const joinChannel = (channelId) => {
+  return fetch(`${baseURL}/channel/${channelId}/join`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+}
+
+const leaveChannel = (channelId) => {
+  return fetch(`${baseURL}/channel/${channelId}/leave`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+
+};
+
 export {
   register,
   login,
@@ -181,4 +220,6 @@ export {
   getChannelDetails,
   editChannelDetails,
   getUserDetails,
+  joinChannel,
+  leaveChannel,
 }

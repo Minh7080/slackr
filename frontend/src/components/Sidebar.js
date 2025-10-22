@@ -19,7 +19,7 @@ export const Sidebar = (setSelectedChannel, subSelectedChannel, getSelectedChann
     const anchor = channelTemplate.querySelector('a');
     const channelHTML = channelTemplate.querySelector('li');
 
-    anchor.prepend(document.createTextNode(name));
+    anchor.querySelector('p').textContent = name;
     if (isPrivate) {
       anchor.querySelector('svg').classList.remove('hidden');
     }
@@ -63,6 +63,6 @@ export const Sidebar = (setSelectedChannel, subSelectedChannel, getSelectedChann
     CreateChannelModal(doGetChannels);
   })
 
-  ChannelDetails(subSelectedChannel, getSelectedChannel, doGetChannels);
+  ChannelDetails(subSelectedChannel, getSelectedChannel, doGetChannels, setSelectedChannel);
   doGetChannels();
 }

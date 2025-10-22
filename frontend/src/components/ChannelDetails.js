@@ -5,7 +5,7 @@ import { Profile } from "./Profile.js";
 
 const unsubscribers = [];
 
-export const ChannelDetails = (subSelectedChannel, getSelectedChannel, doGetChannels) => {
+export const ChannelDetails = (subSelectedChannel, getSelectedChannel, doGetChannels, setSelectedChannel) => {
   unsubscribers.forEach(unsub => unsub());
   unsubscribers.length = 0;
 
@@ -77,7 +77,7 @@ export const ChannelDetails = (subSelectedChannel, getSelectedChannel, doGetChan
     doGetChannelDetails(selectedChannel);
   }));
 
-  updateChannelBtn.addEventListener('click', () => EditChannelModal(doGetChannels, getSelectedChannel, doGetChannelDetails));
+  updateChannelBtn.addEventListener('click', () => EditChannelModal(doGetChannels, getSelectedChannel, doGetChannelDetails, setSelectedChannel));
 
   doGetChannelDetails(getSelectedChannel());
 };

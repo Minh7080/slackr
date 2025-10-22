@@ -1,6 +1,6 @@
 import { editChannelDetails, getChannelDetails } from '../lib/api.js';
 
-export const EditChannelModal = (doGetChannels, getSelectedChannel, doGetChannelDetails ) => {
+export const EditChannelModal = (doGetChannels, getSelectedChannel, doGetChannelDetails, setSelectedChannel ) => {
   const mountpoint = document.getElementById('modal-container');
   const modal = document.getElementById('edit-channel-modal-component').content.cloneNode(true);
   mountpoint.replaceChildren(modal);
@@ -39,8 +39,9 @@ export const EditChannelModal = (doGetChannels, getSelectedChannel, doGetChannel
   form.addEventListener('submit', e => {
     e.preventDefault();
     editChannelDetails(getSelectedChannel().id, name.value, description.value)
-      .then(doGetChannels())
-      .then(doGetChannelDetails(getSelectedChannel()))
-      .then(mountpoint.close());
+      .then(() => setSelectedChannel({...getSelectedChannel(), ...{name: name.value}}))
+      .then(doGetChannels)
+      .then(() => doGetChannelDetails(getSelectedChannel()))
+      .then(() => mountpoint.close());
   });
 }

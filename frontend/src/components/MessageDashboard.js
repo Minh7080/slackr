@@ -32,26 +32,61 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
 
   leaveChannelBtn.addEventListener('click', () => leaveChannel(getSelectedChannelId()).then(() => getChannelsAPI().then(data => setChannels(data))));
 
+  // Message content
+  let loading = false;
+  let currentChannelId = getSelectedChannelId();
+  let startIdx = 0;
   const messagesMountpoint = document.getElementById('message-mountpoint');
 
-  const updateMessages = (selectedChannelId) => {
-    getMessages(selectedChannelId, 0).then(data => {
-      const messagePromises = data.map(message => Message({ message }));
-      Promise.all(messagePromises).then(messages =>
-        messages.reverse().forEach(x => {
-          messagesMountpoint.appendChild(x);
-          x.scrollIntoView({ behavior: 'smooth', block: 'end' })
-        })
-      );
-    });
-  }
+  const loadMessages = (isInitial = false) => {
+    if (loading) return Promise.resolve();
+    loading = true;
 
-  unsubscribers.push(subSelectedChannelId(selectedChannelId => {
-    updateMessages(selectedChannelId);
-  }));
+    const loadingElement = document.getElementById('message-loading-component').content.firstElementChild.cloneNode(true);
+    messagesMountpoint.prepend(loadingElement);
 
-  unsubscribers.push(subChannels(() => {
-    updateMessages(getSelectedChannelId());
-  }));
+    return getMessages(currentChannelId, startIdx)
+      .then(data => {
+        const messagePromises = data.map(message => Message({ message }));
+        return Promise.all(messagePromises);
+      })
+      .then(messages => {
+        messages.forEach(x => messagesMountpoint.prepend(x));
 
+        if (isInitial && messagesMountpoint.lastElementChild) {
+          messagesMountpoint.scrollTop = messagesMountpoint.scrollHeight;
+        }
+
+        startIdx += messages.length;
+      })
+      .finally(() => {
+        loading = false;
+        loadingElement.remove();
+      });
+  };
+
+  const resetAndLoadMessages = () => {
+    const newChannelId = getSelectedChannelId();
+    if (newChannelId !== currentChannelId) {
+      currentChannelId = newChannelId;
+      startIdx = 0;
+      messagesMountpoint.innerHTML = '';
+    }
+    return loadMessages(true);
+  };
+
+  unsubscribers.push(subSelectedChannelId(() => resetAndLoadMessages()));
+  unsubscribers.push(subChannels(() => resetAndLoadMessages()));
+
+  messagesMountpoint.addEventListener('scroll', () => {
+    if (messagesMountpoint.scrollTop <= 0  && !loading) {
+      const previousHeight = messagesMountpoint.scrollHeight;
+      loadMessages().then(() => {
+        const newHeight = messagesMountpoint.scrollHeight;
+        messagesMountpoint.scrollTop = newHeight - previousHeight;
+      });
+    }
+  });
+
+  resetAndLoadMessages();
 };

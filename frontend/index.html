@@ -22,7 +22,7 @@
     <div class="toast toast-top toast-center z-10" id="toast-container">
     </div>
 
-    <dialog class="modal" id="modal-container">
+    <dialog class="modal z-9" id="modal-container">
     </dialog>
 
     <main role="main">
@@ -108,16 +108,43 @@
     </template>
 
     <template id="message-dashboard-component">
-      <div class="border-b-2 border-base-300 px-2 pb-2 flex justify-between gap-2">
+      <div class="border-b-2 border-base-300 px-2 pb-2 flex justify-between gap-2 mb-2">
         <h2 class="font-bold text-2xl truncate w-0 flex-1" id="message-dashboard-channel-name">Channel title</h2>
         <button class="btn btn-outline" id="message-dashboard-leave-button">Leave channel</button>
       </div>
 
-      <div class="contents">
-        <div class="grow h-full overflow-y-auto">
+      <div class="grow h-full overflow-y-auto" id="message-mountpoint">
+
+      </div>
+      <div>
+        <textarea class="w-full min-h-10 max-h-40 textarea overflow-auto resize-none"></textarea>
+      </div>
+    </template>
+
+    <template id="message-component">
+      <div class="flex gap-3 w-full py-2 px-4 rounded-box hover:bg-base-300 message-container">
+        <div class="avatar">
+          <div class="size-[46px] rounded">
+            <img class="message-avatar"
+              src="assets/avatar.svg"
+              alt="Tailwind-CSS-Avatar-component"
+            />
+          </div>
         </div>
+
         <div>
-          <textarea class="w-full min-h-10 max-h-40 textarea overflow-auto resize-none"></textarea>
+          <div>
+            <h3 class="message-username font-bold inline">Minh</h3>
+            <div class="inline-flex gap-1">
+              <small class="message-timestamp">2 months ago</small>
+              <small class="hidden meesage-edit-timestamp"></small>
+            </div>
+          </div>
+          <div class="message-content">
+            <p class="text-sm">Hello there this should be good and cool</p>
+            <p class="text-sm">Hello there this should be good and cool</p>
+            <p class="text-sm">Hello there this should be good and cool</p>
+          </div>
         </div>
       </div>
     </template>
@@ -193,7 +220,7 @@
           </div>
         </div>
         <div class="flex flex-col">
-          <p>proife</p>
+          <p class="font-bold">proife</p>
           <small>profile@mail.com</small>
         </div>
       </div>

@@ -2,8 +2,11 @@ import { getMessages, sendMessage } from '../lib/api.js';
 import { Message } from './Message.js';
 
 export const MessageInput = ({ getSelectedChannelId }) => {
-  const messageMountpoint = document.getElementById('message-mountpoint');
+  const messageInputMountpoint = document.getElementById('message-input-mountpoint');
+  const messageInputDocument = document.getElementById('message-input-component').content.cloneNode(true);
+  messageInputMountpoint.replaceChildren(messageInputDocument);
 
+  const messageMountpoint = document.getElementById('message-mountpoint');
   const inputElement = document.getElementById('message-input');
   const submitBtn = document.getElementById('message-submit-button');
   submitBtn.disabled = true;

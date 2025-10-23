@@ -1,6 +1,7 @@
 import { deleteMessage, getUserDetails } from '../lib/api.js';
 import { dateFormatter } from '../lib/dateFormatter.js';
 import { formatTextToHTML } from '../lib/formatTextToHTML.js';
+import { EditMessageInput } from './EditMessageInput.js';
 
 export const Message = ({ message, getSelectedChannelId }) => {
   const messageTemplate = document.getElementById('message-component').content.cloneNode(true);
@@ -10,11 +11,28 @@ export const Message = ({ message, getSelectedChannelId }) => {
   const contentElement = messageElement.querySelector('.message-content');
   const avatarElement = messageElement.querySelector('.message-avatar');
   const timestamp = messageElement.querySelector('.message-timestamp');
+  const editTimestamp = messageElement.querySelector('.message-edit-timestamp');
   const deleteBtn = messageElement.querySelector('.message-delete-button');
+  const editBtn = messageElement.querySelector('.message-edit-button');
 
-  contentElement.replaceChildren(formatTextToHTML(message.message));
-  timestamp.textContent = dateFormatter(message.sentAt);
+  const updateMessageDOM = (content, sentAt, edited, editedAt, scrollTo) => {
+    contentElement.replaceChildren(formatTextToHTML(content));
+    timestamp.textContent = dateFormatter(sentAt);
+    if (edited) {
+      editTimestamp.textContent = `(edited ${dateFormatter(editedAt)})`;
+      editTimestamp.classList.remove('hidden');
+    }
+    if (scrollTo) messageElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }
+
+  updateMessageDOM(message.message, message.sentAt, message.edited, message.editedAt, false);
+
   deleteBtn.hidden = message.sender !== parseInt(localStorage.userId);
+  editBtn.hidden = message.sender !== parseInt(localStorage.userId);
+
+  messageElement.setAttribute('message-id', message.id);
+
+  editBtn.addEventListener('click', () => EditMessageInput({ getSelectedChannelId, message, updateMessageDOM }));
 
   deleteBtn.addEventListener('click', () => {
     deleteMessage(getSelectedChannelId(), message.id)

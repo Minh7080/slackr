@@ -14,6 +14,7 @@ export const Message = ({ message, getSelectedChannelId }) => {
   const editTimestamp = messageElement.querySelector('.message-edit-timestamp');
   const deleteBtn = messageElement.querySelector('.message-delete-button');
   const editBtn = messageElement.querySelector('.message-edit-button');
+  const divider = messageElement.querySelector('.authenticated-divider');
 
   const updateMessageDOM = (content, sentAt, edited, editedAt, scrollTo) => {
     contentElement.replaceChildren(formatTextToHTML(content));
@@ -27,8 +28,7 @@ export const Message = ({ message, getSelectedChannelId }) => {
 
   updateMessageDOM(message.message, message.sentAt, message.edited, message.editedAt, false);
 
-  deleteBtn.hidden = message.sender !== parseInt(localStorage.userId);
-  editBtn.hidden = message.sender !== parseInt(localStorage.userId);
+  [deleteBtn, editBtn, divider].forEach(x => x.hidden = message.sender !== parseInt(localStorage.userId));
 
   messageElement.setAttribute('message-id', message.id);
 

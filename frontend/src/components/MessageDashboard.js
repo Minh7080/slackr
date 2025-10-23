@@ -48,7 +48,7 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
 
     return getMessages(currentChannelId, startIdx)
       .then(data => {
-        const messagePromises = data.map(message => Message({ message }));
+        const messagePromises = data.map(message => Message({ message, getSelectedChannelId }));
         return Promise.all(messagePromises);
       })
       .then(messages => {
@@ -91,5 +91,5 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
 
   resetAndLoadMessages();
 
-  MessageInput(getSelectedChannelId);
+  MessageInput({ getSelectedChannelId });
 };

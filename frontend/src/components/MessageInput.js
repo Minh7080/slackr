@@ -1,7 +1,7 @@
 import { getMessages, sendMessage } from '../lib/api.js';
 import { Message } from './Message.js';
 
-export const MessageInput = (getSelectedChannelId) => {
+export const MessageInput = ({ getSelectedChannelId }) => {
   const messageMountpoint = document.getElementById('message-mountpoint');
 
   const inputElement = document.getElementById('message-input');
@@ -25,7 +25,7 @@ export const MessageInput = (getSelectedChannelId) => {
         return getMessages(getSelectedChannelId(), 0);
       })
       .then(messages => {
-        return Message({ message: messages[0] });
+        return Message({ message: messages[0], getSelectedChannelId });
       })
       .then(message => {
         messageMountpoint.appendChild(message);

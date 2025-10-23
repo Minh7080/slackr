@@ -250,6 +250,25 @@ const sendMessage = (channelId, message, image) => {
     });
 }
 
+const deleteMessage = (channelId, messageId) => {
+  return fetch(`${baseURL}/message/${channelId}/${messageId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+};
+
 export {
   register,
   login,
@@ -263,4 +282,5 @@ export {
   leaveChannel,
   getMessages,
   sendMessage,
+  deleteMessage,
 }

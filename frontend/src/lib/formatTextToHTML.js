@@ -9,7 +9,7 @@ const createParagraph = (text) => {
     const p = document.createElement('p');
     p.textContent = line;
 
-    if (!line) p.textContent = '\u00A0';
+    // if (!line) p.textContent = '\u00A0';
 
     fragment.appendChild(p);
   }

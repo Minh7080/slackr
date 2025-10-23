@@ -2,7 +2,7 @@ import { MessageDashboard } from "../components/MessageDashboard.js";
 import { MessageDashboardUnaccessable } from "../components/MessageDashboardUnaccessable.js";
 import { MessageDashboardWarning } from "../components/MessageDashboardWarning.js";
 import { Sidebar } from "../components/Sidebar.js";
-import { getChannels as getChannelsAPI, logout } from "../lib/api.js";
+import { getChannels as getChannelsAPI, getMessages, logout } from "../lib/api.js";
 import { useState } from "../lib/hooks.js";
 import { LoginPage } from "./LoginPage.js";
 
@@ -21,7 +21,7 @@ export const HomePage = () => {
   Sidebar({ setSelectedChannelId, getSelectedChannelId ,subSelectedChannelId, subChannels, getChannels, setChannels });
 
   const updateDashboard = (selectedChannelId) => {
-    if (selectedChannelId === -1) {
+    if (selectedChannelId === -1 || !getChannels().map(x => x.id).includes(selectedChannelId)) {
       MessageDashboardWarning();
       return;
     }

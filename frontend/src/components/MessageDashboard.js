@@ -1,4 +1,5 @@
-import { leaveChannel, getChannels as getChannelsAPI } from '../lib/api.js';
+import { leaveChannel, getChannels as getChannelsAPI, getMessages } from '../lib/api.js';
+import { Message } from './Message.js';
 
 const unsubscribers = [];
 
@@ -30,5 +31,27 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   }));
 
   leaveChannelBtn.addEventListener('click', () => leaveChannel(getSelectedChannelId()).then(() => getChannelsAPI().then(data => setChannels(data))));
+
+  const messagesMountpoint = document.getElementById('message-mountpoint');
+
+  const updateMessages = (selectedChannelId) => {
+    getMessages(selectedChannelId, 0).then(data => {
+      const messagePromises = data.map(message => Message({ message }));
+      Promise.all(messagePromises).then(messages =>
+        messages.reverse().forEach(x => {
+          messagesMountpoint.appendChild(x);
+          x.scrollIntoView({ behavior: 'smooth', block: 'end' })
+        })
+      );
+    });
+  }
+
+  unsubscribers.push(subSelectedChannelId(selectedChannelId => {
+    updateMessages(selectedChannelId);
+  }));
+
+  unsubscribers.push(subChannels(() => {
+    updateMessages(getSelectedChannelId());
+  }));
 
 };

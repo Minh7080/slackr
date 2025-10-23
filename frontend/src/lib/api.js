@@ -230,6 +230,26 @@ const getMessages = (channelId, startIdx) => {
     });
 };
 
+const sendMessage = (channelId, message, image) => {
+  return fetch(`${baseURL}/message/${channelId}`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({ message, image })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+}
+
 export {
   register,
   login,
@@ -242,4 +262,5 @@ export {
   joinChannel,
   leaveChannel,
   getMessages,
+  sendMessage,
 }

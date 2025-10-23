@@ -269,6 +269,26 @@ const deleteMessage = (channelId, messageId) => {
     });
 };
 
+const editMessage = (channelId, messageId, message, image) => {
+  return fetch(`${baseURL}/message/${channelId}/${messageId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({ message, image })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+};
+
 export {
   register,
   login,
@@ -283,4 +303,5 @@ export {
   getMessages,
   sendMessage,
   deleteMessage,
+  editMessage,
 }

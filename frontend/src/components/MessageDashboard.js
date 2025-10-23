@@ -1,5 +1,6 @@
 import { leaveChannel, getChannels as getChannelsAPI, getMessages } from '../lib/api.js';
 import { Message } from './Message.js';
+import { MessageInput } from './MessageInput.js';
 
 const unsubscribers = [];
 
@@ -89,4 +90,6 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   });
 
   resetAndLoadMessages();
+
+  MessageInput(getSelectedChannelId);
 };

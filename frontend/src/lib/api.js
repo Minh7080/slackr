@@ -211,6 +211,25 @@ const leaveChannel = (channelId) => {
 
 };
 
+const getMessages = (channelId, startIdx) => {
+  return fetch(`${baseURL}/message/${channelId}?start=${startIdx}`, {
+    method: 'GET',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data.messages;
+      }
+    });
+};
+
 export {
   register,
   login,
@@ -222,4 +241,5 @@ export {
   getUserDetails,
   joinChannel,
   leaveChannel,
+  getMessages,
 }

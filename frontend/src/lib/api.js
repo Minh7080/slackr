@@ -289,6 +289,46 @@ const editMessage = (channelId, messageId, message, image) => {
     });
 };
 
+const reactToMessage = (channelId, messageId, react) => {
+  return fetch(`${baseURL}/message/react/${channelId}/${messageId}`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({ react })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+}
+
+const unReactToMessage = (channelId, messageId, react) => {
+  return fetch(`${baseURL}/message/unreact/${channelId}/${messageId}`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({ react })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+}
+
 export {
   register,
   login,
@@ -304,4 +344,6 @@ export {
   sendMessage,
   deleteMessage,
   editMessage,
+  reactToMessage,
+  unReactToMessage,
 }

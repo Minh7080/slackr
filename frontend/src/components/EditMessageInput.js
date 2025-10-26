@@ -32,11 +32,10 @@ export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageD
   const submitMessage = () => {
     editMessage(getSelectedChannelId(), message.id, inputElement.value)
       .then(() => {
-        updateMessageDOM(inputElement.value, message.sentAt, true, new Date(), true);
-
         message.message = inputElement.value;
-        message.edit = true;
+        message.edited = true;
         message.editedAt = new Date();
+        updateMessageDOM(true);
       })
       .then(() => {
         MessageInput({ getSelectedChannelId });

@@ -157,6 +157,7 @@
         </div>
       </div>
     </template>
+
     <template id="message-edit-component">
       <p class="menu-title py-1 px-2 bg-base-300 rounded-t-lg mx-4 shadow-md border border-neutral-content">
         <em>Editing message</em>
@@ -215,43 +216,47 @@
     </template>
 
     <template id="message-component">
-      <div class="flex gap-3 w-full py-2 px-4 rounded-box hover:bg-base-300 message-container group">
-        <div class="avatar">
-          <div class="size-[46px] rounded">
-            <img class="message-avatar"
-              src="assets/avatar.svg"
-              alt="avatar image"
-            />
-          </div>
-        </div>
-
-        <div>
-          <div>
-            <h3 class="message-username font-bold inline">Minh</h3>
-            <div class="inline-flex gap-1">
-              <small class="message-timestamp">2 months ago</small>
-              <small class="hidden message-edit-timestamp"></small>
+      <div class="flex flex-col w-full py-1 px-4 my-1 rounded-box hover:bg-base-300 message-container relative group">
+        <p class="message-pin-label hidden text-base-content/40 ml-14">
+          <svg class="inline" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin-icon lucide-pin"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
+          <small class="font-bold">Pinned</small>
+        </p>
+        <div class="flex gap-3">
+          <div class="avatar">
+            <div class="size-[46px] rounded">
+              <img class="message-avatar"
+                src="assets/avatar.svg"
+                alt="avatar image"
+              />
             </div>
           </div>
-          <div class="message-content">
-            <p>hello</p>
+          <div>
+            <div>
+              <h3 class="message-username font-bold inline">Minh</h3>
+              <div class="inline-flex gap-1">
+                <small class="message-timestamp">2 months ago</small>
+                <small class="hidden message-edit-timestamp"></small>
+              </div>
+            </div>
+            <div class="message-content">
+              <p>hello</p>
+            </div>
+
+            <div class="flex gap-1 mt-1 message-react-labels-mountpoint">
+              <button class="btn btn-xs rounded-full">
+                <div>❤️</div>
+                <div class="font-normal text-sm">2</div>
+              </button>
+            </div>
           </div>
 
-          <div class="flex gap-1 mt-1 message-react-labels-mountpoint">
-            <button class="btn btn-xs rounded-full">
-              <div>❤️</div>
-              <div class="font-normal text-sm">2</div>
-            </button>
-          </div>
-        </div>
-
-        <div class="bg-base-100 border ml-auto flex gap-1 rounded-box relative p-2 border-base-300 justify-center items-center flex-none self-start bottom-6 hidden group-hover:flex shadow-md">
-          <div class="flex gap-2">
-            <button class="btn btn-xs btn-circle shadow-none btn-ghost">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin-icon lucide-pin"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
-              <svg class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin-off-icon lucide-pin-off"><path d="M12 17v5"/><path d="M15 9.34V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H7.89"/><path d="m2 2 20 20"/><path d="M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h11"/></svg>
-            </button>
-          </div>
+          <div class="bg-base-100 border ml-auto flex gap-1 rounded-box absolute p-2 border-base-300 justify-center items-center flex-none -top-5 right-0 z-8 hidden group-hover:flex shadow-md">
+            <div class="flex gap-2">
+              <button class="btn btn-xs btn-circle shadow-none btn-ghost message-pin-button">
+                <svg class="message-pin-button-pin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin-icon lucide-pin"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
+                <svg class="message-pin-button-unpin hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin-off-icon lucide-pin-off"><path d="M12 17v5"/><path d="M15 9.34V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H7.89"/><path d="m2 2 20 20"/><path d="M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h11"/></svg>
+              </button>
+            </div>
 
           <hr class="rotate-90 flex-grow border border-base-300 w-5">
           <div class="flex gap-2">

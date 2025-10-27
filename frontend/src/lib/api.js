@@ -153,6 +153,25 @@ const editChannelDetails = (channedId, newName, newDescription) => {
     });
 };
 
+const getUsers = () => {
+  return fetch(`${baseURL}/user`, {
+    method: 'GET',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data.users;
+      }
+    });
+};
+
 const getUserDetails = (userId) => {
   return fetch(`${baseURL}/user/${userId}`, {
     method: 'GET',
@@ -208,7 +227,26 @@ const leaveChannel = (channelId) => {
         return data;
       }
     });
+};
 
+const inviteToChannel = (channelId, userId) => {
+  return fetch(`${baseURL}/channel/${channelId}/invite`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({ userId })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
 };
 
 const getMessages = (channelId, startIdx) => {
@@ -395,9 +433,11 @@ export {
   createChannel,
   getChannelDetails,
   editChannelDetails,
+  getUsers,
   getUserDetails,
   joinChannel,
   leaveChannel,
+  inviteToChannel,
   getMessages,
   sendMessage,
   deleteMessage,

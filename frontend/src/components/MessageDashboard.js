@@ -1,6 +1,8 @@
-import { leaveChannel, getChannels as getChannelsAPI, getMessages } from '../lib/api.js';
+import { useState } from '../lib/hooks.js';
+import { leaveChannel, getChannels as getChannelsAPI, getMessages, getPinnedMessages } from '../lib/api.js';
 import { Message } from './Message.js';
 import { MessageInput } from './MessageInput.js';
+import { PinnedMessage } from './PinnedMessage.js';
 
 const unsubscribers = [];
 
@@ -33,6 +35,21 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
 
   leaveChannelBtn.addEventListener('click', () => leaveChannel(getSelectedChannelId()).then(() => getChannelsAPI().then(data => setChannels(data))));
 
+  const loadPinnedMessages = () => {
+    const mountpoint = document.getElementById('pinned-messages-mountpoint');
+    mountpoint.replaceChildren();
+    getPinnedMessages(getSelectedChannelId())
+      .then(messages => {
+        const messagePromises = messages.map(message => PinnedMessage({ message }));
+        return Promise.all(messagePromises);
+      })
+      .then(messages => {
+        messages.forEach(message => {
+          mountpoint.append(message);
+        });
+      });
+  }
+
   // Message content
   let loading = false;
   let currentChannelId = getSelectedChannelId();
@@ -48,7 +65,7 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
 
     return getMessages(currentChannelId, startIdx)
       .then(data => {
-        const messagePromises = data.map(message => Message({ message, getSelectedChannelId }));
+        const messagePromises = data.map(message => Message({ message, getSelectedChannelId, loadPinnedMessages }));
         return Promise.all(messagePromises);
       })
       .then(messages => {
@@ -80,7 +97,7 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   unsubscribers.push(subChannels(() => resetAndLoadMessages()));
 
   messagesMountpoint.addEventListener('scroll', () => {
-    if (messagesMountpoint.scrollTop <= 0  && !loading) {
+    if (messagesMountpoint.scrollTop <= 0 && !loading) {
       const previousHeight = messagesMountpoint.scrollHeight;
       loadMessages().then(() => {
         const newHeight = messagesMountpoint.scrollHeight;
@@ -92,4 +109,7 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   resetAndLoadMessages();
 
   MessageInput({ getSelectedChannelId });
+
+
+  loadPinnedMessages();
 };

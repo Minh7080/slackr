@@ -108,7 +108,10 @@
     <template id="message-dashboard-component">
       <div class="border-b-2 border-base-300 px-2 pb-2 flex justify-between gap-2 mb-1">
         <h2 class="font-bold text-2xl truncate w-0 flex-1" id="message-dashboard-channel-name">Channel title</h2>
-        <button class="btn btn-outline" id="message-dashboard-leave-button">Leave channel</button>
+        <div class="flex gap-3">
+          <button class="btn btn-outline" id="invite-user-button">Invite memeber</button>
+          <button class="btn btn-outline" id="message-dashboard-leave-button">Leave channel</button>
+        </div>
       </div>
 
       <div class="grow h-full flex gap-4 overflow-hidden">
@@ -148,7 +151,7 @@
             </div>
 
             <div class="flex gap-1 mt-1 message-react-labels-mountpoint">
-              <button class="btn btn-xs rounded-full" >
+              <button class="btn btn-xs rounded-full">
                 <div>❤️</div>
                 <div class="font-normal text-sm">2</div>
               </button>
@@ -449,6 +452,44 @@
           </div>
         </fieldset>
       </form>
+    </template>
+
+    <template id="invite-modal-component">
+
+      <form class="modal-box" method="submit" id="channel-invite-container">
+        <fieldset class="fieldset">
+          <h3 class="text-lg font-bold" id="invite-heading">Invite people to </h3>
+
+          <div class="max-h-100 overflow-y-auto" id="invite-profile-mountpoint">
+
+          </div>
+
+          <div class="modal-action">
+            <button class="btn btn-error btn-outline" id="invite-cancel-button" type="button">Cancel</button>
+            <button class="btn btn-primary" id="invite-submit-button" type="submit">Invite members</button>
+          </div>
+        </fieldset>
+      </form>
+
+    </template>
+
+    <template id="invite-profile-component">
+      <label for="">
+        <div class="flex gap-3 items-center hover:bg-base-300 rounded-box hover:cursor-pointer py-1 my-1 px-2">
+          <input type="checkbox" class="checkbox invite-member-checkbox" id=""/>
+          <div class="flex gap-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded">
+                <img src="assets/avatar.svg" alt="avatar">
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <p class="font-bold text-lg invite-member-name">proife</p>
+              <small class="text-base invite-member-email">profile@mail.com</small>
+            </div>
+          </div>
+        </div>
+      </label>
     </template>
 
     <template id="error-toast-component">

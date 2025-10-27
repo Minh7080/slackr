@@ -329,6 +329,64 @@ const unReactToMessage = (channelId, messageId, react) => {
     });
 }
 
+const pinMessage = (channelId, messageId) => {
+  return fetch(`${baseURL}/message/pin/${channelId}/${messageId}`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+};
+
+const unpinMessage = (channelId, messageId) => {
+  return fetch(`${baseURL}/message/unpin/${channelId}/${messageId}`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+};
+
+const getPinnedMessages = (channelId) => {
+  let idx = 0;
+  const messages = [];
+
+  const loop = () => {
+    return getMessages(channelId, idx).then(data => {
+      messages.push(...data);
+      idx = messages.length;
+
+      if (data.length > 0) {
+        return loop();
+      } else {
+        return messages.filter(message => message.pinned);
+      }
+    })
+  }
+
+  return loop();
+}
+
 export {
   register,
   login,
@@ -346,4 +404,7 @@ export {
   editMessage,
   reactToMessage,
   unReactToMessage,
+  pinMessage,
+  unpinMessage,
+  getPinnedMessages,
 }

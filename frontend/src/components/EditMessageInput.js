@@ -1,12 +1,11 @@
 import { editMessage } from '../lib/api.js';
 import { MessageInput } from './MessageInput.js';
 
-export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageDOM }) => {
+export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageDOM, loadPinnedMessages }) => {
   const messageInputMountpoint = document.getElementById('message-input-mountpoint');
   const messageEditDocument = document.getElementById('message-edit-component').content.cloneNode(true);
   messageInputMountpoint.replaceChildren(messageEditDocument);
 
-  const messageMountpoint = document.getElementById('message-mountpoint');
   const inputElement = document.getElementById('message-edit-input');
   const submitBtn = document.getElementById('message-edit-submit-button');
   const closeBtn = document.getElementById('message-edit-close-button');
@@ -39,6 +38,7 @@ export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageD
       })
       .then(() => {
         MessageInput({ getSelectedChannelId });
+        loadPinnedMessages();
       })
   };
 

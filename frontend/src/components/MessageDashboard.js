@@ -1,5 +1,5 @@
-import { useState } from '../lib/hooks.js';
 import { leaveChannel, getChannels as getChannelsAPI, getMessages, getPinnedMessages } from '../lib/api.js';
+import { InviteUserModal } from './InviteUserModal.js';
 import { Message } from './Message.js';
 import { MessageInput } from './MessageInput.js';
 import { PinnedMessage } from './PinnedMessage.js';
@@ -15,6 +15,9 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
 
   const dashboardHeading = document.getElementById('message-dashboard-channel-name');
   const leaveChannelBtn = document.getElementById('message-dashboard-leave-button');
+  const inviteBtn = document.getElementById('invite-user-button');
+
+  inviteBtn.addEventListener('click', () => InviteUserModal({ getSelectedChannelId }));
 
   const updateMessageDashboard = (selectedChannelId) => {
     if (selectedChannelId === -1) {
@@ -108,7 +111,7 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
 
   resetAndLoadMessages();
 
-  MessageInput({ getSelectedChannelId });
+  MessageInput({ getSelectedChannelId, loadPinnedMessages });
 
 
   loadPinnedMessages();

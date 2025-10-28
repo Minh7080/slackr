@@ -1,8 +1,9 @@
-import { deleteMessage, getPinnedMessages, getUserDetails, pinMessage, reactToMessage, unpinMessage, unReactToMessage } from '../lib/api.js';
+import { deleteMessage, getUserDetails, pinMessage, reactToMessage, unpinMessage, unReactToMessage } from '../lib/api.js';
 import { dateFormatter } from '../lib/dateFormatter.js';
 import { formatTextToHTML } from '../lib/formatTextToHTML.js';
 import { EditMessageInput } from './EditMessageInput.js';
 import { MessageReactLabels } from './MessageReactLabels.js';
+import { ProfileModal } from './ProfileModal.js';
 
 export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) => {
   const messageTemplate = document.getElementById('message-component').content.cloneNode(true);
@@ -21,6 +22,7 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
   const pinLabel = messageElement.querySelector('.message-pin-label');
   const pinBtn = messageElement.querySelector('.message-pin-button');
 
+  [avatarElement, usernameElement].forEach(element => element.addEventListener('click', () => ProfileModal({ userId: message.sender })))
 
   const react = (reactString) => {
     const userId = parseInt(localStorage.getItem('userId'));
@@ -82,7 +84,6 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
   });
 
   updateMessageDOM(false);
-
 
   reactButtons.forEach(button => button.addEventListener('click', () => {
     react(button.textContent);

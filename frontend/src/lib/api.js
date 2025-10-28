@@ -189,6 +189,26 @@ const getUserDetails = (userId) => {
         return data;
       }
     });
+};
+
+const updateUserProfile = (email, name, bio, password, image) => {
+  return fetch(`${baseURL}/user`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({ email, password, name, bio, image })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
 }
 
 const joinChannel = (channelId) => {
@@ -435,6 +455,7 @@ export {
   editChannelDetails,
   getUsers,
   getUserDetails,
+  updateUserProfile,
   joinChannel,
   leaveChannel,
   inviteToChannel,

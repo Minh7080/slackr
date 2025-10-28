@@ -20,7 +20,7 @@
     <div class="toast toast-top toast-center z-10" id="toast-container">
     </div>
 
-    <dialog class="modal z-9" id="modal-container">
+    <dialog class="modal z-8" id="modal-container">
     </dialog>
 
     <main role="main">
@@ -472,7 +472,13 @@
     <template id="profile-modal-component">
       <form class="modal-box" method="submit" id="profile-container">
         <fieldset class="fieldset">
-          <h3 class="text-lg font-bold">Profile</h3>
+          <div class="flex justify-between">
+            <h3 class="text-lg font-bold">Profile</h3>
+            <button type="button" class="btn btn-sm btn-outline flex-shrink-0" title="Edit profile" id="profile-edit-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+              <span>Edit profile</span>
+          </button>
+          </div>
           <div class="flex flex-col items-center gap-2">
             <div class="avatar">
               <div class="w-25 rounded">
@@ -490,6 +496,52 @@
             <div class="modal-action">
               <button class="btn btn-error btn-outline" id="profile-modal-cancel" type="button">Close</button>
             </div>
+        </fieldset>
+      </form>
+    </template>
+
+    <template id="profile-edit-modal-component">
+      <form class="modal-box" method="submit">
+        <fieldset class="fieldset">
+          <div>
+            <button class="btn btn-ghost p-2 mb-2" id="profile-edit-back-button" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-icon lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              Back
+            </button>
+            <h3 class="text-lg font-bold">Edit Profile</h3>
+          </div>
+          <div class="flex flex-col items-center gap-2">
+            <div class="avatar relative overflow-hidden">
+              <div class="w-25 rounded">
+                <img src="" alt="avatar" id="profile-edit-image">
+              </div>
+              <button class="absolute btn btn-xl btn-circle pr-4 pb-4 -right-6 -bottom-6" type="button" id="profile-edit-image-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <input type="file" class="hidden" id="profile-edit-image-input" accept="image/*">
+
+          <label for="profile-edit-name" class="label">Name</label>
+          <input type="text" id="profile-edit-name" class="input w-full" required pattern=".*\S.*">
+
+          <label for="profile-edit-email" class="label">Email</label>
+          <input type="email" id="profile-edit-email" class="input w-full" required pattern=".*\S.*">
+
+          <label for="profile-edit-password" class="label">Password</label>
+          <div class="flex gap-2 items-center">
+            <input type="password" id="profile-edit-password" class="input w-full" pattern=".*\S.*">
+            <input type="checkbox" class="btn btn-outline btn-soft btn-neutral right-1 bottom-1 z-9 w-14" aria-label="show" id="profile-edit-password-checkbox">
+          </div>
+
+          <label for="profile-edit-bio" class="label">About me</label>
+          <textarea id="profile-edit-bio" class="textarea w-full min-h-10 max-h-40 resize-none"></textarea>
+
+          <div class="modal-action">
+            <button class="btn btn-error btn-outline" id="profile-edit-close-button" type="button">Close</button>
+            <button class="btn btn-primary" id="profile-edit-submit" type="submit">Confirm Changes</button>
+          </div>
         </fieldset>
       </form>
     </template>

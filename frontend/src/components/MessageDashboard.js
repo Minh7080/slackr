@@ -16,8 +16,44 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   const dashboardHeading = document.getElementById('message-dashboard-channel-name');
   const leaveChannelBtn = document.getElementById('message-dashboard-leave-button');
   const inviteBtn = document.getElementById('invite-user-button');
+  const pinnedBtn = document.getElementById('pinned-button');
 
   inviteBtn.addEventListener('click', () => InviteUserModal({ getSelectedChannelId }));
+
+  let isPinnedDashboardCollapsed = false;
+
+  const updatePinnedDashboardCollaspe = () => {
+    if (isPinnedDashboardCollapsed) {
+      document.getElementById('pinned-message-dashboard').classList.add('translate-x-full');
+
+      setTimeout(() => {
+        document.getElementById('pinned-message-dashboard').classList.add('hidden');
+        pinnedBtn.classList.remove('btn-active');
+      }, 200)
+
+    } else {
+      document.getElementById('pinned-message-dashboard').classList.remove('hidden');
+      requestAnimationFrame(() => {
+        document.getElementById('pinned-message-dashboard').classList.remove('translate-x-full');
+        pinnedBtn.classList.add('btn-active');
+      })
+    }
+  };
+
+  pinnedBtn.addEventListener('click', () => {
+    isPinnedDashboardCollapsed = !isPinnedDashboardCollapsed;
+    updatePinnedDashboardCollaspe();
+  });
+
+  const mediaQuery = window.matchMedia('(min-width: 1024px)');
+
+  mediaQuery.addEventListener('change', e => {
+    e.matches ? isPinnedDashboardCollapsed = false : isPinnedDashboardCollapsed = true;
+    updatePinnedDashboardCollaspe();
+  });
+
+  mediaQuery.matches ? isPinnedDashboardCollapsed = false : isPinnedDashboardCollapsed = true;
+  updatePinnedDashboardCollaspe();
 
   const updateMessageDashboard = (selectedChannelId) => {
     if (selectedChannelId === -1) {

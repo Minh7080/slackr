@@ -7,11 +7,13 @@ export const Sidebar = ({ setSelectedChannelId, getSelectedChannelId, subSelecte
   unsubscribers.forEach(unsub => unsub());
 
   const mountpoint = document.getElementById('sidebar-mountpoint');
-  const sidebar = document.getElementById('sidebar-component').content.cloneNode(true);
-  mountpoint.replaceChildren(sidebar);
+  const sidebarDocument = document.getElementById('sidebar-component').content.cloneNode(true);
+  const sidebarElement = sidebarDocument.firstElementChild;
+  mountpoint.replaceChildren(sidebarDocument);
 
   const channelListElement = document.getElementById('channel-list');
   const createChannelBtn = document.getElementById('create-channel-button');
+  const sidebarCollapseBtn = document.getElementById('sidebar-collapse-button');
 
   const createChannelElement = (name, id, isPrivate) => {
     const channelTemplate = document.getElementById('channel-entry-component').content.cloneNode(true);
@@ -63,7 +65,39 @@ export const Sidebar = ({ setSelectedChannelId, getSelectedChannelId, subSelecte
   updateSelectedChannel(getChannels());
   createChannelBtn.addEventListener('click', () => {
     CreateChannelModal({ setChannels });
-  })
+  });
+
+  let isSidebarCollapsed = false;
+
+  const updateSidebarCollapse = () => {
+    if (isSidebarCollapsed) {
+      sidebarElement.classList.add('-translate-x-75');
+      sidebarElement.classList.remove('relative', 'left-0');
+      setTimeout(() => sidebarElement.classList.add('absolute'), 100);
+
+      document.getElementById('message-dashboard-mountpoint').classList.add('pl-8');
+    } else {
+      sidebarElement.classList.remove('absolute' , '-translate-x-75');
+      sidebarElement.classList.add('relative', 'left-0');
+
+      document.getElementById('message-dashboard-mountpoint').classList.remove('pl-8');
+    }
+  }
+
+  sidebarCollapseBtn.addEventListener('click', () => {
+    isSidebarCollapsed = !isSidebarCollapsed;
+    updateSidebarCollapse();
+  });
+
+  const mediaQuery = window.matchMedia('(min-width: 768px)');
+
+  mediaQuery.addEventListener('change', e => {
+    e.matches ? isSidebarCollapsed = false : isSidebarCollapsed = true;
+    updateSidebarCollapse();
+  });
+
+  mediaQuery.matches ? isSidebarCollapsed = false : isSidebarCollapsed = true;
+  updateSidebarCollapse();
 
   ChannelDetails({ subSelectedChannelId, setChannels, getSelectedChannelId, subChannels });
 }

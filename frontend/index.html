@@ -77,7 +77,7 @@
             <!-- Sidebar -->
           </div>
 
-          <div class="flex flex-col w-full p-4 justify-between" id="message-dashboard-mountpoint">
+            <div class="flex flex-col w-full p-4 justify-between" id="message-dashboard-mountpoint">
           </div>
 
         </div>
@@ -106,18 +106,30 @@
     </template>
 
     <template id="message-dashboard-component">
-      <div class="border-b-2 border-base-300 px-2 pb-2 flex justify-between gap-2 mb-1">
-        <h2 class="font-bold text-2xl truncate w-0 flex-1" id="message-dashboard-channel-name">Channel title</h2>
+      <div class="border-b-2 border-base-300 px-2 pb-2 flex justify-between gap-2 mb-1 items-center">
+        <h2 class="font-bold truncate w-0 flex-1 text-xl lg:text-2xl" id="message-dashboard-channel-name">Channel title</h2>
         <div class="flex gap-3">
-          <button class="btn btn-outline" id="invite-user-button">Invite memeber</button>
-          <button class="btn btn-outline" id="message-dashboard-leave-button">Leave channel</button>
+          <button class="btn btn-outline btn-active btn-sm lg:btn-md" id="pinned-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin-icon lucide-pin"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
+            <span class="hidden lg:inline">Pinned</span>
+          </button>
+
+          <button class="btn btn-outline btn-sm lg:btn-md" id="invite-user-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+            <span class="hidden lg:inline">Invite member</span>
+          </button>
+
+          <button class="btn btn-outline btn-error btn-sm lg:btn-md" id="message-dashboard-leave-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-from-line-icon lucide-arrow-left-from-line"><path d="m9 6-6 6 6 6"/><path d="M3 12h14"/><path d="M21 19V5"/></svg>
+            <span class="hidden lg:inline">Leave channel</span>
+          </button>
         </div>
       </div>
 
-      <div class="grow h-full flex gap-4 overflow-hidden">
+      <div class="grow h-full flex gap-4 overflow-hidden relative">
         <div class="grow h-full overflow-y-auto" id="message-mountpoint">
         </div>
-        <div class="rounded-box bg-base-300 w-120 mb-1 flex flex-col py-2">
+        <div class="rounded-box bg-base-300 mb-1 absolute h-full w-full lg:static lg:w-120 flex flex-col py-2 transition duration-200 ease-out" id="pinned-message-dashboard">
           <h2 class="menu-title text-lg">Pinned messages</h2>
           <div class="overflow-y-auto h-full mx-4" id="pinned-messages-mountpoint">
           </div>
@@ -224,8 +236,8 @@
           <svg class="inline" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin-icon lucide-pin"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
           <small class="font-bold">Pinned</small>
         </p>
-        <div class="flex gap-3">
-          <div class="avatar">
+        <div class="flex gap-3 items-start">
+          <div class="avatar mt-1">
             <div class="size-[46px] rounded">
               <img class="message-avatar"
                 src="assets/avatar.svg"
@@ -253,7 +265,7 @@
             </div>
           </div>
 
-          <div class="bg-base-100 border ml-auto flex gap-1 rounded-box absolute p-2 border-base-300 justify-center items-center flex-none -top-5 right-0 z-8 hidden group-hover:flex shadow-md">
+          <div class="bg-base-100 border px-3 ml-auto flex gap-1 rounded-box absolute p-2 border-base-300 justify-center items-center flex-none -top-5 right-0 z-8 hidden group-hover:flex shadow-md">
             <div class="flex gap-2">
               <button class="btn btn-xs btn-circle shadow-none btn-ghost message-pin-button">
                 <svg class="message-pin-button-pin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin-icon lucide-pin"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
@@ -295,11 +307,14 @@
     </template>
 
     <template id="sidebar-component">
-      <div class="bg-base-100 w-80 p-4 text-base-content h-full flex flex-col gap-3 border-r-2 border-base-300 items-center">
+      <div class="bg-base-100 w-80 p-4 text-base-content h-full flex flex-col gap-3 border-r-2 border-base-300 items-center relative left-0 transition duration-200 ease-out">
+        <button class="absolute z-7 btn btn-circle btn-sm -right-[18px] bg-base-100 border border-2 top-5" id="sidebar-collapse-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu-icon lucide-menu"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+        </button>
         <div class="bg-primary-content flex flex-col justify-center items-center py-1 px-5 rounded-box w-25 shadow-sm">
           <h1 class="text-center text-2xl font-bold text-primary">Slack<span class="text-secondary">r</span></h1>
         </div>
-        <ul class=" menu flex-1 flex flex-col min-h-0 w-full bg-base-300 rounded-box shadow-md">
+        <ul class=" menu flex-1 flex flex-col min-h-50 w-full bg-base-300 rounded-box shadow-md">
           <h2 class="menu-title text-lg flex justify-between items-center flex-shrink-0">
             Channels 
             <button class="btn btn-xs btn-square btn-outline" title="Create new channel" id="create-channel-button">

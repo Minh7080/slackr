@@ -225,7 +225,7 @@
     </template>
 
     <template id="message-loading-component">
-      <div class="text-center bg-primary-content py-2 rounded-box">
+      <div class="text-center py-2">
         <span class="loading loading-dots loading-xl text-primary"></span>
       </div>
     </template>
@@ -327,14 +327,8 @@
 
         <div class="contents" id="channel-details-mountpoint">
         </div>
-        <div class="bg-base-300 h-15 rounded-box shadow-md flex justify-between items-center px-3 w-full">
-          <div class="flex gap-3 items-center">
-            <div class="avatar">
-              <div class="w-8 rounded">
-                <img src="" alt="avatar">
-              </div>
-            </div>
-            <p>proife</p>
+        <div class="bg-base-300 min-h-15 h-15 rounded-box shadow-md flex justify-between items-center px-3 w-full">
+          <div id="own-profile-mountpoint" class="flex-grow">
           </div>
           <button id="logout-button" title="Logout" class="btn btn-error btn-square btn-sm btn-outline"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg></button>
         </div>
@@ -381,6 +375,20 @@
         </div>
         <div class="flex flex-col">
           <p class="font-bold">proife</p>
+          <small>profile@mail.com</small>
+        </div>
+      </div>
+    </template>
+
+    <template id="own-profile-component">
+      <div class="flex gap-3 items-center hover:cursor-pointer">
+        <div class="avatar">
+          <div class="w-8 rounded">
+            <img src="" alt="avatar" id="avatar-image">
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <p class="font-bold">my-profile</p>
           <small>profile@mail.com</small>
         </div>
       </div>

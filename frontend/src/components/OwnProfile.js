@@ -1,8 +1,9 @@
 import { getUserDetails } from '../lib/api.js';
 import { ProfileModal } from './ProfileModal.js';
 
-export const Profile = (userId, mountpointId) => {
-  const mountpoint = document.getElementById(mountpointId);
+export const OwnProfile = () => {
+  const userId = parseInt(localStorage.getItem('userId'));
+  const mountpoint = document.getElementById('own-profile-mountpoint');
   const profileTemplate = document.getElementById('profile-component').content.cloneNode(true);
   const profileElement = profileTemplate.querySelector('div');
 

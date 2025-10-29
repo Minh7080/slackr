@@ -1,6 +1,7 @@
 import { MessageDashboard } from "../components/MessageDashboard.js";
 import { MessageDashboardUnaccessable } from "../components/MessageDashboardUnaccessable.js";
 import { MessageDashboardWarning } from "../components/MessageDashboardWarning.js";
+import { OwnProfile } from "../components/OwnProfile.js";
 import { Sidebar } from "../components/Sidebar.js";
 import { getChannels as getChannelsAPI, getMessages, logout } from "../lib/api.js";
 import { useState } from "../lib/hooks.js";
@@ -51,4 +52,6 @@ export const HomePage = () => {
   logoutBtn.addEventListener('click', () => {
     logout().finally(() => LoginPage());
   });
+
+  OwnProfile();
 }

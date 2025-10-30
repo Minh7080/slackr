@@ -280,7 +280,6 @@ const getMessages = (channelId, startIdx) => {
     .then(res => res.json())
     .then(data => {
       if (data.error) {
-        ToastError(data.error);
         return Promise.reject(data);
       } else {
         return data.messages;

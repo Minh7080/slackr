@@ -2,6 +2,7 @@ import { getUserDetails } from '../lib/api.js';
 import { dateFormatter } from '../lib/dateFormatter.js';
 import { formatTextToHTML } from '../lib/formatTextToHTML.js';
 import { MessageReactLabels } from './MessageReactLabels.js';
+import { PinnedMessageImage } from './PinnedMessageImage.js';
 
 export const PinnedMessage = ({ message }) => {
   const messageTemplate = document.getElementById('pinned-message-component').content.cloneNode(true);
@@ -16,7 +17,12 @@ export const PinnedMessage = ({ message }) => {
 
 
   const updateMessageDOM = (currentMessage = message) => {
-    contentElement.replaceChildren(formatTextToHTML(currentMessage.message));
+    if (currentMessage.message) {
+      contentElement.replaceChildren(formatTextToHTML(currentMessage.message));
+    } else if (currentMessage.image) {
+      contentElement.replaceChildren(PinnedMessageImage({ src: currentMessage.image }));
+    }
+
     timestamp.textContent = dateFormatter(currentMessage.sentAt);
     if (currentMessage.edited) {
       editTimestamp.textContent = `(edited ${dateFormatter(currentMessage.editedAt)})`;

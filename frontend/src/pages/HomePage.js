@@ -6,14 +6,20 @@ import { Sidebar } from "../components/Sidebar.js";
 import { getChannels as getChannelsAPI, getMessages, logout } from "../lib/api.js";
 import { useState } from "../lib/hooks.js";
 import { LoginPage } from "./LoginPage.js";
+import {
+  getSelectedChannelId,
+  setSelectedChannelId,
+  subSelectedChannelId,
+  getChannels,
+  setChannels,
+  subChannels,
+} from '../stores/channels.js';
 
 export const HomePage = () => {
   const main = document.querySelector('main');
   const page = document.getElementById('home-page').content.cloneNode(true);
   main.replaceChildren(page);
 
-  const [getSelectedChannelId, setSelectedChannelId, subSelectedChannelId] = useState(-1);
-  const [getChannels, setChannels, subChannels] = useState([]);
 
   getChannelsAPI().then(data => {
     setChannels(data);

@@ -109,6 +109,16 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
   }
 
   pinBtn.addEventListener('click', () => pin());
+  
+  messageElement.addEventListener('click', e => {
+    if (e.pointerType !== 'touch') {
+      document.querySelectorAll('.message-interacton').forEach(interaction => interaction.style.display = '');
+      return;
+    }
+
+    document.querySelectorAll('.message-interacton').forEach(interaction => interaction.style.display = '');
+    messageElement.querySelector('.message-interacton').style.display = 'flex'
+  })
 
   return getUserDetails(message.sender).then(data => {
     usernameElement.textContent = data.name;

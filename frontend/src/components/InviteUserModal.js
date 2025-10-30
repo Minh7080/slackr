@@ -15,27 +15,29 @@ export const InviteUserModal = ({ getSelectedChannelId }) => {
 
   const selectedUserIdsSet = new Set();
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
+  form.addEventListener('submit', event => {
+    event.preventDefault();
 
-    const usersPromises = [...selectedUserIdsSet].map(userId => 
-      inviteToChannel(getSelectedChannelId(), userId));
-    Promise.all(usersPromises)
-      .then(() => mountpoint.close());
+    const usersPromises = [...selectedUserIdsSet]
+      .map(userId => inviteToChannel(getSelectedChannelId(), userId));
+
+    Promise.all(usersPromises).then(() => mountpoint.close());
   });
 
   getChannelDetails(getSelectedChannelId()).then(channel => {
     heading.textContent = `Invite people to ${channel.name}`;
     return getUsers().then(users => {
-      return users.filter(user => !channel.members.includes(user.id))
+      return users.filter(user => !channel.members.includes(user.id));
     });
   })
-    .then(users => Promise.all(users.map(user => InviteProfile({ userId: user.id, selectedUserIdsSet }))))
+    .then(users => Promise.all(users.map(user => InviteProfile({
+      userId: user.id, selectedUserIdsSet,
+    }))))
     .then(elements => profileMountpoint.replaceChildren(...(elements)
-      .sort((a, b) => {
-        const nameA = a.querySelector('.invite-member-name').textContent.toLowerCase();
-        const nameB = b.querySelector('.invite-member-name').textContent.toLowerCase();
+      .sort((elementA, elementB) => {
+        const nameA = elementA.querySelector('.invite-member-name').textContent.toLowerCase();
+        const nameB = elementB.querySelector('.invite-member-name').textContent.toLowerCase();
         return nameA.localeCompare(nameB);
       })))
     .then(() => mountpoint.showModal());
-}
+};

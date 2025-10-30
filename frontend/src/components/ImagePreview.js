@@ -51,19 +51,19 @@ export const ImagePreview = ({ images, currentIndex = 0 }) => {
   nextBtn.addEventListener('click', goToNext);
 
   // Keyboard navigation
-  const handleKeyDown = (e) => {
-    if (e.key === 'ArrowLeft') {
+  const handleKeyDown = (event) => {
+    if (event.key === 'ArrowLeft') {
       goToPrev();
-    } else if (e.key === 'ArrowRight') {
+    } else if (event.key === 'ArrowRight') {
       goToNext();
-    } else if (e.key === 'Escape') {
+    } else if (event.key === 'Escape') {
       mountpoint.close();
     }
   };
 
   mountpoint.addEventListener('keydown', handleKeyDown);
   
-  // Clean up event listener when modal closes
+  // Clean up event listeners when modal closes
   const handleClose = () => {
     mountpoint.removeEventListener('keydown', handleKeyDown);
     mountpoint.removeEventListener('close', handleClose);
@@ -71,4 +71,4 @@ export const ImagePreview = ({ images, currentIndex = 0 }) => {
   mountpoint.addEventListener('close', handleClose);
 
   mountpoint.showModal();
-}
+};

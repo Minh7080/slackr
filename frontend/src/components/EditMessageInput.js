@@ -2,20 +2,29 @@ import { editMessage } from '../lib/api.js';
 import { fileToDataUrl } from '../lib/imageToUrl.js';
 import { MessageInput } from './MessageInput.js';
 
-export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageDOM, loadPinnedMessages }) => {
+export const EditMessageInput = ({ 
+  getSelectedChannelId,
+  message,
+  updateMessageDOM,
+  loadPinnedMessages,
+}) => {
+  // Clone template and place it on the mountpoint
   const messageInputMountpoint = document.getElementById('message-input-mountpoint');
-  const messageEditDocument = document.getElementById('message-edit-component').content.cloneNode(true);
+  const messageEditDocument = document.
+    getElementById('message-edit-component').content.cloneNode(true);
   messageInputMountpoint.replaceChildren(messageEditDocument);
 
+  // DOM selectors
   const inputElement = document.getElementById('message-edit-input');
   const submitBtn = document.getElementById('message-edit-submit-button');
   const closeBtn = document.getElementById('message-edit-close-button');
-  submitBtn.disabled = true;
 
   const addImageBtn = document.getElementById('message-edit-input-image-button');
   const imageInput = document.getElementById('message-edit-input-image-input');
   const imagePreview = document.getElementById('message-edit-input-image-preview');
 
+
+  // Fill the inputElement.value with content of message and resize it accordingly
   inputElement.value = message.message ? message.message : '';
   inputElement.style.height = inputElement.scrollHeight + 'px';
 
@@ -23,39 +32,30 @@ export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageD
   const originalMessage = message.message || '';
   let imageRemoved = false;
 
+  // Focus on element upon creation
+  inputElement.focus();
+
+  // Disable submit button by default
+  submitBtn.disabled = true;
+
+  // Helper functions
   const updateSubmitBtn = () => {
-    const hasText = inputElement.value.trim() !== "";
+    const hasText = inputElement.value.trim() !== '';
     const hasNewImage = !!imageInput.files[0];
     const textChanged = inputElement.value.trim() !== originalMessage.trim();
     
-    // Image changed if: new image selected, original removed, or image was removed
+    // Check if the new image is the same as the old image
     let imageChanged = false;
     if (hasNewImage) {
-      imageChanged = true; // New image selected
+      imageChanged = true;
     } else if (originalHasImage && imageRemoved) {
-      imageChanged = true; // Original image was removed
+      imageChanged = true;
     }
     
-    // Need either text or image (new or original if not removed)
+    // Enable submit only if there is content and something changed
     const hasContent = hasText || hasNewImage || (originalHasImage && !imageRemoved);
-    
     submitBtn.disabled = !hasContent || (!textChanged && !imageChanged);
-  }
-
-  inputElement.addEventListener('input', () => {
-    inputElement.style.height = 'auto';
-    inputElement.style.height = inputElement.scrollHeight + 'px';
-    updateSubmitBtn();
-  });
-
-  inputElement.addEventListener('keydown', e => {
-    if (e.key === 'Escape') MessageInput({ getSelectedChannelId, loadPinnedMessages });
-  });
-
-  inputElement.focus();
-
-  closeBtn.addEventListener('click', () => MessageInput({ getSelectedChannelId, loadPinnedMessages }));
-
+  };
 
   const updateImageButton = () => {
     if (inputElement.value.trim()) {
@@ -63,7 +63,23 @@ export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageD
     } else {
       addImageBtn.disabled = false;
     }
-  }
+  };
+
+  // Resize text area based on content and updateSubmitBtn
+  inputElement.addEventListener('input', () => {
+    inputElement.style.height = 'auto';
+    inputElement.style.height = inputElement.scrollHeight + 'px';
+    updateSubmitBtn();
+  });
+
+  // Go back to MessageInput component if escape key is pressed or closeBtn is clicked
+  inputElement.addEventListener('keydown', event => {
+    if (event.key === 'Escape') MessageInput({ getSelectedChannelId, loadPinnedMessages });
+  });
+  closeBtn.addEventListener('click', () => {
+    MessageInput({ getSelectedChannelId, loadPinnedMessages });
+  });
+
 
   inputElement.addEventListener('input', () => {
     updateImageButton();
@@ -92,7 +108,7 @@ export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageD
       imagePreview.style.display = 'none';
       updateSubmitBtn();
     }
-  }
+  };
 
   updateImageButton();
   updateImagePreview();
@@ -111,7 +127,7 @@ export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageD
     imageRemoved = true;
     updateImagePreview();
     updateSubmitBtn();
-  })
+  });
 
   const submitMessage = () => {
     let finalImage = undefined;
@@ -139,7 +155,7 @@ export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageD
           });
       });
     } else {
-      // No new image - keep original if not removed, otherwise remove it
+      // No new image keep original if not removed, otherwise remove it
       finalImage = (originalHasImage && !imageRemoved) ? message.image : undefined;
       const finalMessage = inputElement.value.trim() || undefined;
       
@@ -166,10 +182,10 @@ export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageD
     submitMessage();
   });
 
-  [addImageBtn, inputElement].forEach(element => element.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey && !submitBtn.disabled) {
-      e.preventDefault();
+  [addImageBtn, inputElement].forEach(element => element.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey && !submitBtn.disabled) {
+      event.preventDefault();
       submitMessage();
     }
-  }))
+  }));
 };

@@ -2,6 +2,7 @@ import { deleteMessage, getUserDetails, pinMessage, reactToMessage, unpinMessage
 import { dateFormatter } from '../lib/dateFormatter.js';
 import { formatTextToHTML } from '../lib/formatTextToHTML.js';
 import { EditMessageInput } from './EditMessageInput.js';
+import { MessageImage } from './MessageImage.js';
 import { MessageReactLabels } from './MessageReactLabels.js';
 import { ProfileModal } from './ProfileModal.js';
 
@@ -45,14 +46,19 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
   }
 
   const updateMessageDOM = (scrollTo, currentMessage = message) => {
-    contentElement.replaceChildren(formatTextToHTML(currentMessage.message));
+    if (currentMessage.message) {
+      contentElement.replaceChildren(formatTextToHTML(currentMessage.message));
+    } else if (currentMessage.image) {
+      contentElement.replaceChildren(MessageImage({ src: currentMessage.image, messageId: currentMessage.id }));
+    }
+
     timestamp.textContent = dateFormatter(currentMessage.sentAt);
     if (currentMessage.edited) {
       editTimestamp.textContent = `(edited ${dateFormatter(currentMessage.editedAt)})`;
       editTimestamp.classList.remove('hidden');
     }
     reactLabelsMountpoint.replaceChildren(MessageReactLabels({ reacts: message.reacts, reactFn: react }));
-    
+
     if (currentMessage.pinned) {
       pinLabel.classList.remove('hidden');
       pinBtn.querySelector('.message-pin-button-pin').classList.add('hidden');

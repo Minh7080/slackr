@@ -4,7 +4,6 @@ import { MessageDashboardWarning } from "../components/MessageDashboardWarning.j
 import { OwnProfile } from "../components/OwnProfile.js";
 import { Sidebar } from "../components/Sidebar.js";
 import { getChannels as getChannelsAPI, getMessages, logout } from "../lib/api.js";
-import { useState } from "../lib/hooks.js";
 import { LoginPage } from "./LoginPage.js";
 import {
   getSelectedChannelId,
@@ -57,6 +56,16 @@ export const HomePage = () => {
   const logoutBtn = document.getElementById('logout-button');
   logoutBtn.addEventListener('click', () => {
     logout().finally(() => LoginPage());
+  });
+
+  logoutBtn.addEventListener('mouseenter', () => {
+    logoutBtn.classList.remove('btn-square');
+    logoutBtn.querySelector('span').style.display = 'inline';
+  });
+
+  logoutBtn.addEventListener('mouseleave', () => {
+    logoutBtn.classList.add('btn-square');
+    logoutBtn.querySelector('span').style.display = '';
   });
 
   OwnProfile();

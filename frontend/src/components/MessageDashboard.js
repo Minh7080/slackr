@@ -18,6 +18,8 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   const inviteBtn = document.getElementById('invite-user-button');
   const pinnedBtn = document.getElementById('pinned-button');
 
+  const loadingElement = document.getElementById('message-loading-component').content.firstElementChild.cloneNode(true);
+
   inviteBtn.addEventListener('click', () => InviteUserModal({ getSelectedChannelId }));
 
   let isPinnedDashboardCollapsed = false;
@@ -76,9 +78,10 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
 
   const loadPinnedMessages = () => {
     const mountpoint = document.getElementById('pinned-messages-mountpoint');
-    mountpoint.replaceChildren();
+    mountpoint.replaceChildren(loadingElement);
     getPinnedMessages(getSelectedChannelId())
       .then(messages => {
+        mountpoint.replaceChildren();
         const messagePromises = messages.map(message => PinnedMessage({ message }));
         return Promise.all(messagePromises);
       })
@@ -99,7 +102,6 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
     if (loading) return Promise.resolve();
     loading = true;
 
-    const loadingElement = document.getElementById('message-loading-component').content.firstElementChild.cloneNode(true);
     messagesMountpoint.prepend(loadingElement);
 
     return getMessages(currentChannelId, startIdx)

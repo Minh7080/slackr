@@ -1,7 +1,7 @@
-import { ToastError } from "../components/ToastError.js";
-import { BACKEND_PORT } from "./config.js";
+import { ToastError } from '../components/ToastError.js';
+import { BACKEND_PORT } from './config.js';
 
-const baseURL = `http://localhost:${BACKEND_PORT}`
+const baseURL = `http://localhost:${BACKEND_PORT}`;
 
 const channelsCacher = {
   cache(data) {
@@ -10,9 +10,10 @@ const channelsCacher = {
   get() {
     const cache = localStorage.getItem('channelsCache');
     return cache ? JSON.parse(cache) : [];
-  }
+  },
 };
 
+// Paginated message cache per channel 
 const messageCacher = {
   pageSize: 25,
   cache(channelId, data, append = false) {
@@ -42,7 +43,7 @@ const messageCacher = {
     const all = JSON.parse(cache);
     if (startIdx <= 0) return all.slice(0, this.pageSize);
     return all.slice(startIdx, startIdx + this.pageSize);
-  }
+  },
 };
 
 const register = (email, password, name) => {
@@ -52,8 +53,8 @@ const register = (email, password, name) => {
     body: JSON.stringify({
       email: email,
       password: password,
-      name: name
-    })
+      name: name,
+    }),
   })
     .then(res => res.json())
     .then(data => {
@@ -69,8 +70,8 @@ const register = (email, password, name) => {
     .catch((err) => {
       ToastError('No internet connection');
       return Promise.reject(err);
-    })
-}
+    });
+};
 
 const login = (email, password) => {
   return fetch(`${baseURL}/auth/login`, {
@@ -79,7 +80,7 @@ const login = (email, password) => {
     body: JSON.stringify({
       email: email,
       password: password,
-    })
+    }),
   })
     .then(res => res.json())
     .then(data => {
@@ -95,16 +96,16 @@ const login = (email, password) => {
     .catch((err) => {
       ToastError('No internet connection');
       return Promise.reject(err);
-    })
-}
+    });
+};
 
 const logout = () => {
   return fetch(`${baseURL}/auth/logout`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -120,15 +121,15 @@ const logout = () => {
       ToastError('No internet connection');
       return Promise.reject(err);
     });
-}
+};
 
 const getChannels = () => {
   return fetch(`${baseURL}/channel`, {
     method: 'GET',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -141,21 +142,21 @@ const getChannels = () => {
         return filtered;
       }
     })
-    .catch(() => channelsCacher.get())
-}
+    .catch(() => channelsCacher.get());
+};
 
 const createChannel = (name, isPrivate, description) => {
   return fetch(`${baseURL}/channel`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
     body: JSON.stringify({
       name: name,
       private: isPrivate,
-      description: description
-    })
+      description: description,
+    }),
   })
     .then(res => res.json())
     .then(data => {
@@ -177,8 +178,8 @@ const getChannelDetails = (channedId) => {
     method: 'GET',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -188,18 +189,6 @@ const getChannelDetails = (channedId) => {
       } else {
         return data;
       }
-    })
-    .catch(() => {
-      return {
-        name: 'Unknown',
-        creator: -1,
-        private: false,
-        description: 'No internet',
-        createdAt: '2011-10-05T14:48:00.000Z',
-        members: [
-          -1
-        ]
-      }
     });
 };
 
@@ -208,12 +197,12 @@ const editChannelDetails = (channedId, newName, newDescription) => {
     method: 'PUT',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
     body: JSON.stringify({
       name: newName,
-      description: newDescription
-    })
+      description: newDescription,
+    }),
   })
     .then(res => res.json())
     .then(data => {
@@ -235,8 +224,8 @@ const getUsers = () => {
     method: 'GET',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -258,8 +247,8 @@ const getUserDetails = (userId) => {
     method: 'GET',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -276,7 +265,7 @@ const getUserDetails = (userId) => {
         name: `User ${userId === -1 ? 'Unknown' : userId}`,
         email: '',
         image: null,
-        bio: ''
+        bio: '',
       };
     });
 };
@@ -286,9 +275,9 @@ const updateUserProfile = (email, name, bio, password, image) => {
     method: 'PUT',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
-    body: JSON.stringify({ email, password, name, bio, image })
+    body: JSON.stringify({ email, password, name, bio, image }),
   })
     .then(res => res.json())
     .then(data => {
@@ -303,15 +292,15 @@ const updateUserProfile = (email, name, bio, password, image) => {
       ToastError('No internet connection');
       return Promise.reject(err);
     });
-}
+};
 
 const joinChannel = (channelId) => {
   return fetch(`${baseURL}/channel/${channelId}/join`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -322,15 +311,15 @@ const joinChannel = (channelId) => {
         return data;
       }
     });
-}
+};
 
 const leaveChannel = (channelId) => {
   return fetch(`${baseURL}/channel/${channelId}/leave`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -352,9 +341,9 @@ const inviteToChannel = (channelId, userId) => {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
-    body: JSON.stringify({ userId })
+    body: JSON.stringify({ userId }),
   })
     .then(res => res.json())
     .then(data => {
@@ -372,8 +361,8 @@ const getMessages = (channelId, startIdx) => {
     method: 'GET',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -394,8 +383,8 @@ const getMessagesNoCache = (channelId, startIdx) => {
     method: 'GET',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -417,9 +406,9 @@ const sendMessage = (channelId, message) => {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
-    body: JSON.stringify({ message })
+    body: JSON.stringify({ message }),
   })
     .then(res => res.json())
     .then(data => {
@@ -441,9 +430,9 @@ const sendMessageImage = (channelId, image) => {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
-    body: JSON.stringify({ image })
+    body: JSON.stringify({ image }),
   })
     .then(res => res.json())
     .then(data => {
@@ -465,8 +454,8 @@ const deleteMessage = (channelId, messageId) => {
     method: 'DELETE',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
   })
     .then(res => res.json())
     .then(data => {
@@ -488,9 +477,9 @@ const editMessage = (channelId, messageId, message, image) => {
     method: 'PUT',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
-    body: JSON.stringify({ message, image })
+    body: JSON.stringify({ message, image }),
   })
     .then(res => res.json())
     .then(data => {
@@ -512,9 +501,9 @@ const reactToMessage = (channelId, messageId, react) => {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
-    body: JSON.stringify({ react })
+    body: JSON.stringify({ react }),
   })
     .then(res => res.json())
     .then(data => {
@@ -528,16 +517,16 @@ const reactToMessage = (channelId, messageId, react) => {
     .catch(() => {
       ToastError('No internet connection');
     });
-}
+};
 
 const unReactToMessage = (channelId, messageId, react) => {
   return fetch(`${baseURL}/message/unreact/${channelId}/${messageId}`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
-    body: JSON.stringify({ react })
+    body: JSON.stringify({ react }),
   })
     .then(res => res.json())
     .then(data => {
@@ -551,14 +540,14 @@ const unReactToMessage = (channelId, messageId, react) => {
     .catch(() => {
       ToastError('No internet connection');
     });
-}
+};
 
 const pinMessage = (channelId, messageId) => {
   return fetch(`${baseURL}/message/pin/${channelId}/${messageId}`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
   })
     .then(res => res.json())
@@ -581,7 +570,7 @@ const unpinMessage = (channelId, messageId) => {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
   })
     .then(res => res.json())
@@ -616,10 +605,10 @@ const getPinnedMessages = (channelId) => {
       })
       .catch(() => {
         return messageCacher.get(channelId, idx).filter(message => message.pinned);
-      })
-  }
+      });
+  };
   return loop();
-}
+};
 
 export {
   register,
@@ -645,4 +634,4 @@ export {
   pinMessage,
   unpinMessage,
   getPinnedMessages,
-}
+};

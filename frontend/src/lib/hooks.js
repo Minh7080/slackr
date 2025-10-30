@@ -5,11 +5,12 @@ const useState = (initialValue) => {
   const getter = () => value;
   const setter = (newValue) => {
     const updatedValue = typeof newValue === 'function'
-    ? newValue(value)
-    : newValue;
+      ? newValue(value)
+      : newValue;
 
     if (updatedValue === value) return;
     value = updatedValue;
+    // Notify subscribers
     listeners.forEach(callback => callback(value));
   };
 
@@ -21,9 +22,9 @@ const useState = (initialValue) => {
 
   const logListeners = () => console.log(listeners);
 
-  return [getter, setter, subscribe, logListeners]
-}
+  return [getter, setter, subscribe, logListeners];
+};
 
 export {
-  useState
-}
+  useState,
+};

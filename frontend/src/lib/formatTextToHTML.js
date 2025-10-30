@@ -1,6 +1,6 @@
 export const formatTextToHTML = (text) => {
   return createParagraph(text);
-}
+};
 
 const createParagraph = (text) => {
   const fragment = document.createDocumentFragment();
@@ -9,9 +9,7 @@ const createParagraph = (text) => {
     const p = document.createElement('p');
     p.textContent = line;
 
-    // if (!line) p.textContent = '\u00A0';
-
     fragment.appendChild(p);
   }
   return fragment;
-}
+};

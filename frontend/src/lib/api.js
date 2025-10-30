@@ -3,6 +3,38 @@ import { BACKEND_PORT } from "./config.js";
 
 const baseURL = `http://localhost:${BACKEND_PORT}`
 
+const messageCacher = {
+  pageSize: 25,
+  cache(channelId, data, append = false) {
+    const cacheKey = `messageCache:${channelId}`;
+    if (!append) {
+      localStorage.setItem(cacheKey, JSON.stringify(data));
+      return;
+    }
+
+    const existing = JSON.parse(localStorage.getItem(cacheKey)) || [];
+
+    const seenIds = new Set(existing.map(m => m.id));
+    const dedupAppends = [];
+    for (const m of data) {
+      if (!seenIds.has(m.id)) {
+        seenIds.add(m.id);
+        dedupAppends.push(m);
+      }
+    }
+
+    localStorage.setItem(cacheKey, JSON.stringify([...existing, ...dedupAppends]));
+  },
+  get(channelId, startIdx = 0) {
+    const cacheKey = `messageCache:${channelId}`;
+    const cache = localStorage.getItem(cacheKey);
+    if (!cache) return [];
+    const all = JSON.parse(cache);
+    if (startIdx <= 0) return all.slice(0, this.pageSize);
+    return all.slice(startIdx, startIdx + this.pageSize);
+  }
+};
+
 const register = (email, password, name) => {
   return fetch(`${baseURL}/auth/register`, {
     method: 'POST',

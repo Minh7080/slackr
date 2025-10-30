@@ -114,17 +114,52 @@ export const EditMessageInput = ({ getSelectedChannelId, message, updateMessageD
   })
 
   const submitMessage = () => {
-    editMessage(getSelectedChannelId(), message.id, inputElement.value)
-      .then(() => {
-        message.message = inputElement.value;
-        message.edited = true;
-        message.editedAt = new Date();
-        updateMessageDOM(true);
-      })
-      .then(() => {
-        MessageInput({ getSelectedChannelId });
-        loadPinnedMessages();
-      })
+    let finalImage = undefined;
+    
+    if (imageInput.files[0]) {
+      // New image selected
+      fileToDataUrl(imageInput.files[0]).then(url => {
+        finalImage = url;
+        const finalMessage = inputElement.value.trim() || undefined;
+        editMessage(getSelectedChannelId(), message.id, finalMessage, finalImage)
+          .then(() => {
+            message.message = inputElement.value;
+            if (finalImage) {
+              message.image = finalImage;
+            } else {
+              delete message.image;
+            }
+            message.edited = true;
+            message.editedAt = new Date();
+            updateMessageDOM(true);
+          })
+          .then(() => {
+            MessageInput({ getSelectedChannelId, loadPinnedMessages });
+            loadPinnedMessages();
+          });
+      });
+    } else {
+      // No new image - keep original if not removed, otherwise remove it
+      finalImage = (originalHasImage && !imageRemoved) ? message.image : undefined;
+      const finalMessage = inputElement.value.trim() || undefined;
+      
+      editMessage(getSelectedChannelId(), message.id, finalMessage, finalImage)
+        .then(() => {
+          message.message = inputElement.value;
+          if (finalImage) {
+            message.image = finalImage;
+          } else {
+            delete message.image;
+          }
+          message.edited = true;
+          message.editedAt = new Date();
+          updateMessageDOM(true);
+        })
+        .then(() => {
+          MessageInput({ getSelectedChannelId, loadPinnedMessages });
+          loadPinnedMessages();
+        });
+    }
   };
 
   submitBtn.addEventListener('click', () => {

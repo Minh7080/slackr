@@ -26,11 +26,11 @@ export const MessageReactLabels = ({ reacts, reactFn }) => {
 
     out.appendChild(reactElement);
 
-    const userPromises = reactCounter.get(react).map(user => getUserDetails(user))
+    /* const userPromises = reactCounter.get(react).map(user => getUserDetails(user))
     Promise.all(userPromises).then(data => {
       reactElement.title = 'Reacted:\n';
       reactElement.title += data.map(user => user.name).join('\n');
-    });
+    }); */
     
   }
   return out;

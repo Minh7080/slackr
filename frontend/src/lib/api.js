@@ -329,6 +329,29 @@ const getMessages = (channelId, startIdx) => {
     });
 };
 
+const getMessagesNoCache = (channelId, startIdx) => {
+  return fetch(`${baseURL}/message/${channelId}?start=${startIdx}`, {
+    method: 'GET',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        return Promise.reject(data);
+      } else {
+        return data.messages;
+      }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
+    });
+};
+
+
 const sendMessage = (channelId, message) => {
   return fetch(`${baseURL}/message/${channelId}`, {
     method: 'POST',
@@ -491,18 +514,21 @@ const getPinnedMessages = (channelId) => {
   const messages = [];
 
   const loop = () => {
-    return getMessages(channelId, idx).then(data => {
-      messages.push(...data);
-      idx = messages.length;
+    return getMessagesNoCache(channelId, idx)
+      .then(data => {
+        messages.push(...data);
+        idx = messages.length;
 
-      if (data.length > 0) {
-        return loop();
-      } else {
-        return messages.filter(message => message.pinned);
-      }
-    })
+        if (data.length > 0) {
+          return loop();
+        } else {
+          return messages.filter(message => message.pinned);
+        }
+      })
+      .catch(() => {
+        return messageCacher.get(channelId, idx).filter(message => message.pinned);
+      })
   }
-
   return loop();
 }
 

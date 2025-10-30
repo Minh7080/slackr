@@ -32,8 +32,8 @@ export const ProfileEditModal = ({ user }) => {
     bio.style.height = bio.scrollHeight + 'px';
   });
 
-  passwordCheckbox.addEventListener('change', e => {
-    if (e.target.checked) {
+  passwordCheckbox.addEventListener('change', event => {
+    if (event.target.checked) {
       passwordCheckbox.ariaLabel = 'hide';
       password.type = 'input';
     } else {
@@ -42,11 +42,11 @@ export const ProfileEditModal = ({ user }) => {
     }
   });
 
-  [name, email].forEach(element => element.addEventListener('blur', e => {
-    if (!e.target.checkValidity()) {
-      e.target.classList.add('input-error');
+  [name, email].forEach(element => element.addEventListener('blur', event => {
+    if (!event.target.checkValidity()) {
+      event.target.classList.add('input-error');
     } else {
-      e.target.classList.remove('input-error');
+      event.target.classList.remove('input-error');
     }
 
   }));
@@ -55,7 +55,7 @@ export const ProfileEditModal = ({ user }) => {
 
   imageBtn.addEventListener('click', () => {
     imageInput.click();
-  })
+  });
 
   cancelBtn.addEventListener('click', () => mountpoint.close());
 
@@ -65,7 +65,9 @@ export const ProfileEditModal = ({ user }) => {
   });
 
   submitBtn.disabled = true;
-  [name, email, password, bio].forEach(element => element.addEventListener('input', () => submitBtn.disabled = false))
+  [name, email, password, bio].forEach(element => element.addEventListener('input', () => {
+    submitBtn.disabled = false;
+  }));
 
   imageInput.addEventListener('change', () => {
     if (imageInput.files.length >= 1) {
@@ -74,22 +76,35 @@ export const ProfileEditModal = ({ user }) => {
     }
   });
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const cleanedEmail = !(email.value.trim()) || email.value.trim() === user.email ? undefined : email.value;
-    const cleanedName = !(name.value.trim()) || name.value.trim() === user.value ? undefined : name.value;
-    const cleanedBio = !(bio.value.trim()) || bio.value.trim() === user.value ? undefined : bio.value;
-    const cleanedPassword = !(password.value.trim()) || password.value.trim() === user.value ? undefined : password.value;
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const cleanedEmail = !(email.value.trim()) || email.value.trim() === user.email
+      ? undefined
+      : email.value;
+
+    const cleanedName = !(name.value.trim()) || name.value.trim() === user.value
+      ? undefined
+      : name.value;
+
+    const cleanedBio = !(bio.value.trim()) || bio.value.trim() === user.value
+      ? undefined
+      : bio.value;
+
+    const cleanedPassword = !(password.value.trim()) || password.value.trim() === user.value
+      ? undefined
+      : password.value;
 
     let promise;
     if (imageInput.files.length >= 1) {
-      promise = fileToDataUrl(imageInput.files[0]).then(url => updateUserProfile(cleanedEmail, cleanedName, cleanedBio, cleanedPassword, url))
+      promise = fileToDataUrl(imageInput.files[0]).then(url => {
+        updateUserProfile(cleanedEmail, cleanedName, cleanedBio, cleanedPassword, url);
+      });
     } else {
       promise = updateUserProfile(cleanedEmail, cleanedName, cleanedBio, cleanedPassword);
     }
 
     promise.then(() => mountpoint.close());
-  })
+  });
 
   mountpoint.showModal();
-}
+};

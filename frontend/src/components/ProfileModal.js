@@ -28,6 +28,7 @@ export const ProfileModal = ({ userId }) => {
     });
 
     if (user.bio) {
+      // Show bio only when present
       profileBio.classList.remove('hidden');
       profileBioHeading.classList.remove('hidden');
       profileBio.replaceChildren(formatTextToHTML(user.bio));
@@ -38,6 +39,7 @@ export const ProfileModal = ({ userId }) => {
 
     const currentUserId = parseInt(localStorage.getItem('userId'));
     if (userId === currentUserId) {
+      // Only the owner can see the edit button
       editBtn.classList.remove('hidden');
     } else {
       editBtn.classList.add('hidden');
@@ -46,4 +48,4 @@ export const ProfileModal = ({ userId }) => {
     mountpoint.showModal();
   });
 
-}
+};

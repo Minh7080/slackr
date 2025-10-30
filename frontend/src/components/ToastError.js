@@ -3,14 +3,15 @@ export const ToastError = (message) => {
   const toast = document.getElementById('error-toast-component').content.cloneNode(true);
   const toastElement = toast.querySelector('div');
   const content = toast.querySelector('span');
-  const closeBtn = toast.querySelector('button')
+  const closeBtn = toast.querySelector('button');
 
   const remove = (element) => {
     element.classList.add('opacity-0');
     element.classList.add('scale-20');
-    setTimeout(() => {element.remove()}, 200);
+    setTimeout(() => {element.remove();}, 200);
   };
 
+  // Drop the oldest toast when exceeding capacity
   if (container.children.length >= 3) {
     remove(container.lastChild);
   }
@@ -19,4 +20,4 @@ export const ToastError = (message) => {
   content.innerText = message;
   closeBtn.addEventListener('click', () => remove(toastElement));
   setTimeout(() => remove(toastElement), 3000);
-}
+};

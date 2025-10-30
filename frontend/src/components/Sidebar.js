@@ -1,9 +1,16 @@
-import { ChannelDetails } from "./ChannelDetails.js";
-import { CreateChannelModal } from "./CreateChannelModal.js";
+import { ChannelDetails } from './ChannelDetails.js';
+import { CreateChannelModal } from './CreateChannelModal.js';
 
 const unsubscribers = [];
 
-export const Sidebar = ({ setSelectedChannelId, getSelectedChannelId, subSelectedChannelId, subChannels, getChannels, setChannels }) => {
+export const Sidebar = ({
+  setSelectedChannelId,
+  getSelectedChannelId,
+  subSelectedChannelId,
+  subChannels,
+  getChannels,
+  setChannels,
+}) => {
   unsubscribers.forEach(unsub => unsub());
 
   const mountpoint = document.getElementById('sidebar-mountpoint');
@@ -16,7 +23,9 @@ export const Sidebar = ({ setSelectedChannelId, getSelectedChannelId, subSelecte
   const sidebarCollapseBtn = document.getElementById('sidebar-collapse-button');
 
   const createChannelElement = (name, id, isPrivate) => {
-    const channelTemplate = document.getElementById('channel-entry-component').content.cloneNode(true);
+    // Build a single channel list item from template
+    const channelTemplate = document.getElementById('channel-entry-component')
+      .content.cloneNode(true);
     const anchor = channelTemplate.querySelector('a');
     const channelHTML = channelTemplate.querySelector('li');
 
@@ -27,11 +36,12 @@ export const Sidebar = ({ setSelectedChannelId, getSelectedChannelId, subSelecte
 
     return {
       getElement: () => channelHTML,
-      getId: () => id
+      getId: () => id,
     };
-  }
+  };
 
   const updateSelectedChannel = (channels) => {
+    // Render the channel list and wire selection state
     channelListElement.replaceChildren();
     channels.forEach(channel => {
       const channelElement = createChannelElement(channel.name, channel.id, channel.private);
@@ -46,17 +56,17 @@ export const Sidebar = ({ setSelectedChannelId, getSelectedChannelId, subSelecte
 
       channelElement.getElement().addEventListener('click', () => {
         setSelectedChannelId(channel.id);
-      })
+      });
 
-        if (getSelectedChannelId() === channel.id) {
-          channelElement.getElement().children[0].classList.add('menu-active');
-        } else {
-          channelElement.getElement().children[0].classList.remove('menu-active');
-        }
+      if (getSelectedChannelId() === channel.id) {
+        channelElement.getElement().children[0].classList.add('menu-active');
+      } else {
+        channelElement.getElement().children[0].classList.remove('menu-active');
+      }
 
       channelListElement.append(channelElement.getElement());
     });
-  }
+  };
 
   unsubscribers.push(subChannels(channels => {
     updateSelectedChannel(channels);
@@ -70,6 +80,7 @@ export const Sidebar = ({ setSelectedChannelId, getSelectedChannelId, subSelecte
   let isSidebarCollapsed = false;
 
   const updateSidebarCollapse = () => {
+    // Slide sidebar for small screens and adjust dashboard padding
     if (isSidebarCollapsed) {
       sidebarElement.classList.add('-translate-x-75');
       sidebarElement.classList.remove('relative', 'left-0');
@@ -82,7 +93,7 @@ export const Sidebar = ({ setSelectedChannelId, getSelectedChannelId, subSelecte
 
       document.getElementById('message-dashboard-mountpoint').classList.remove('pl-8');
     }
-  }
+  };
 
   sidebarCollapseBtn.addEventListener('click', () => {
     isSidebarCollapsed = !isSidebarCollapsed;
@@ -91,8 +102,8 @@ export const Sidebar = ({ setSelectedChannelId, getSelectedChannelId, subSelecte
 
   const mediaQuery = window.matchMedia('(min-width: 768px)');
 
-  mediaQuery.addEventListener('change', e => {
-    e.matches ? isSidebarCollapsed = false : isSidebarCollapsed = true;
+  mediaQuery.addEventListener('change', event => {
+    event.matches ? isSidebarCollapsed = false : isSidebarCollapsed = true;
     updateSidebarCollapse();
   });
 
@@ -100,4 +111,4 @@ export const Sidebar = ({ setSelectedChannelId, getSelectedChannelId, subSelecte
   updateSidebarCollapse();
 
   ChannelDetails({ subSelectedChannelId, setChannels, getSelectedChannelId, subChannels });
-}
+};

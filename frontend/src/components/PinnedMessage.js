@@ -5,7 +5,8 @@ import { MessageReactLabels } from './MessageReactLabels.js';
 import { PinnedMessageImage } from './PinnedMessageImage.js';
 
 export const PinnedMessage = ({ message }) => {
-  const messageTemplate = document.getElementById('pinned-message-component').content.cloneNode(true);
+  const messageTemplate = document.getElementById('pinned-message-component')
+    .content.cloneNode(true);
   const messageElement = messageTemplate.firstElementChild;
 
   const usernameElement = messageElement.querySelector('.message-username');
@@ -17,6 +18,7 @@ export const PinnedMessage = ({ message }) => {
 
 
   const updateMessageDOM = (currentMessage = message) => {
+    // Render content, timestamps, and static react labels
     if (currentMessage.message) {
       contentElement.replaceChildren(formatTextToHTML(currentMessage.message));
     } else if (currentMessage.image) {
@@ -28,8 +30,11 @@ export const PinnedMessage = ({ message }) => {
       editTimestamp.textContent = `(edited ${dateFormatter(currentMessage.editedAt)})`;
       editTimestamp.classList.remove('hidden');
     }
-    reactLabelsMountpoint.replaceChildren(MessageReactLabels({ reacts: message.reacts, reactFn: () => {} }));
-  }
+    reactLabelsMountpoint.replaceChildren(MessageReactLabels({
+      reacts: message.reacts,
+      reactFn: () => {},
+    }));
+  };
 
   updateMessageDOM(message);
 

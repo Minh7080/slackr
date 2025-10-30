@@ -17,7 +17,7 @@ export const OwnProfile = () => {
     name.textContent = data.name;
     email.textContent = data.email;
     img.src = data.image ? data.image : 'assets/avatar.svg';
-    img.alt = `${data.name} profile picture`
+    img.alt = `${data.name} profile picture`;
 
     profileElement.addEventListener('click', () => {
       ProfileModal({ userId });

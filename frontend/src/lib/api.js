@@ -3,6 +3,16 @@ import { BACKEND_PORT } from "./config.js";
 
 const baseURL = `http://localhost:${BACKEND_PORT}`
 
+const channelsCacher = {
+  cache(data) {
+    localStorage.setItem('channelsCache', JSON.stringify(data));
+  },
+  get() {
+    const cache = localStorage.getItem('channelsCache');
+    return cache ? JSON.parse(cache) : [];
+  }
+};
+
 const messageCacher = {
   pageSize: 25,
   cache(channelId, data, append = false) {

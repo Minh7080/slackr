@@ -1,6 +1,6 @@
-import { login } from "../lib/api.js";
-import { HomePage } from "./HomePage.js";
-import { RegisterPage } from "./RegisterPage.js";
+import { login } from '../lib/api.js';
+import { HomePage } from './HomePage.js';
+import { RegisterPage } from './RegisterPage.js';
 
 export const LoginPage = () => {
   const main = document.querySelector('main');
@@ -17,6 +17,7 @@ export const LoginPage = () => {
     login(email.value, password.value)
       .then(() => HomePage())
       .catch(() => {
+        // Clear password on failure and refocus
         password.value = '';
         password.focus();
       });
@@ -33,5 +34,5 @@ export const LoginPage = () => {
     } else {
       x.classList.remove('input-error');
     }
-  }))
-}
+  }));
+};

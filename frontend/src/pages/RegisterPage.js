@@ -1,6 +1,6 @@
-import { register } from "../lib/api.js";
-import { HomePage } from "./HomePage.js";
-import { LoginPage } from "./LoginPage.js";
+import { register } from '../lib/api.js';
+import { HomePage } from './HomePage.js';
+import { LoginPage } from './LoginPage.js';
 
 export const RegisterPage = () => {
   const main = document.querySelector('main');
@@ -11,7 +11,7 @@ export const RegisterPage = () => {
   const email = document.getElementById('register-email');
   const password = document.getElementById('register-password');
   const passwordRetype = document.getElementById('register-password-confirm');
-  const name = document.getElementById('register-name')
+  const name = document.getElementById('register-name');
   const loginLink = document.getElementById('login-link');
 
   form.addEventListener('submit', e => {
@@ -19,6 +19,7 @@ export const RegisterPage = () => {
     register(email.value, password.value, name.value)
       .then(() => HomePage())
       .catch(() => {
+        // Clear fields on failure and refocus
         password.value = '';
         passwordRetype.value = '';
         password.focus();
@@ -44,5 +45,5 @@ export const RegisterPage = () => {
     } else {
       x.classList.remove('input-error');
     }
-  }))
-}
+  }));
+};

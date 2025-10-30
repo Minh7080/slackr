@@ -1,10 +1,10 @@
-import { MessageDashboard } from "../components/MessageDashboard.js";
-import { MessageDashboardUnaccessable } from "../components/MessageDashboardUnaccessable.js";
-import { MessageDashboardWarning } from "../components/MessageDashboardWarning.js";
-import { OwnProfile } from "../components/OwnProfile.js";
-import { Sidebar } from "../components/Sidebar.js";
-import { getChannels as getChannelsAPI, getMessages, logout } from "../lib/api.js";
-import { LoginPage } from "./LoginPage.js";
+import { MessageDashboard } from '../components/MessageDashboard.js';
+import { MessageDashboardUnaccessable } from '../components/MessageDashboardUnaccessable.js';
+import { MessageDashboardWarning } from '../components/MessageDashboardWarning.js';
+import { OwnProfile } from '../components/OwnProfile.js';
+import { Sidebar } from '../components/Sidebar.js';
+import { getChannels as getChannelsAPI, getMessages, logout } from '../lib/api.js';
+import { LoginPage } from './LoginPage.js';
 import {
   getSelectedChannelId,
   setSelectedChannelId,
@@ -24,9 +24,11 @@ export const HomePage = () => {
     setChannels(data);
   });
 
+  // Mount sidebar and wire subscriptions
   Sidebar({ setSelectedChannelId, getSelectedChannelId ,subSelectedChannelId, subChannels, getChannels, setChannels });
 
   const updateDashboard = (selectedChannelId) => {
+    // Choose which dashboard variant to render based on selection and access
     if (selectedChannelId === -1 || !getChannels().map(x => x.id).includes(selectedChannelId)) {
       MessageDashboardWarning();
       return;
@@ -41,8 +43,9 @@ export const HomePage = () => {
 
     MessageDashboard({ subSelectedChannelId, getChannels, subChannels, getSelectedChannelId, setChannels });
 
-  }
+  };
 
+  // Subscriptions to channel selection/list changes
   subSelectedChannelId(selectedChannelId => {
     updateDashboard(selectedChannelId);
   });
@@ -58,6 +61,7 @@ export const HomePage = () => {
     logout().finally(() => LoginPage());
   });
 
+  // Small hover affordance for logout button label
   logoutBtn.addEventListener('mouseenter', () => {
     logoutBtn.classList.remove('btn-square');
     logoutBtn.querySelector('span').style.display = 'inline';
@@ -69,4 +73,4 @@ export const HomePage = () => {
   });
 
   OwnProfile();
-}
+};

@@ -1,4 +1,9 @@
-import { leaveChannel, getChannels as getChannelsAPI, getMessages, getPinnedMessages } from '../lib/api.js';
+import {
+  leaveChannel,
+  getChannels as getChannelsAPI,
+  getMessages,
+  getPinnedMessages,
+} from '../lib/api.js';
 import { InviteUserModal } from './InviteUserModal.js';
 import { Message } from './Message.js';
 import { MessageInput } from './MessageInput.js';
@@ -6,7 +11,13 @@ import { PinnedMessage } from './PinnedMessage.js';
 
 const unsubscribers = [];
 
-export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannels, getSelectedChannelId, setChannels }) => {
+export const MessageDashboard = ({
+  subSelectedChannelId,
+  getChannels,
+  subChannels,
+  getSelectedChannelId,
+  setChannels,
+}) => {
   unsubscribers.forEach(unsub => unsub());
 
   const mountpoint = document.getElementById('message-dashboard-mountpoint');
@@ -18,27 +29,29 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   const inviteBtn = document.getElementById('invite-user-button');
   const pinnedBtn = document.getElementById('pinned-button');
 
-  const loadingElement = document.getElementById('message-loading-component').content.firstElementChild.cloneNode(true);
+  const loadingElement = document.getElementById('message-loading-component')
+    .content.firstElementChild.cloneNode(true);
 
   inviteBtn.addEventListener('click', () => InviteUserModal({ getSelectedChannelId }));
 
   let isPinnedDashboardCollapsed = false;
 
   const updatePinnedDashboardCollaspe = () => {
+    // Slide pinned panel in/out with small animation and button state
     if (isPinnedDashboardCollapsed) {
       document.getElementById('pinned-message-dashboard').classList.add('translate-x-full');
 
       setTimeout(() => {
         document.getElementById('pinned-message-dashboard').classList.add('hidden');
         pinnedBtn.classList.remove('btn-active');
-      }, 200)
+      }, 200);
 
     } else {
       document.getElementById('pinned-message-dashboard').classList.remove('hidden');
       requestAnimationFrame(() => {
         document.getElementById('pinned-message-dashboard').classList.remove('translate-x-full');
         pinnedBtn.classList.add('btn-active');
-      })
+      });
     }
   };
 
@@ -49,8 +62,8 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
 
   const mediaQuery = window.matchMedia('(min-width: 1024px)');
 
-  mediaQuery.addEventListener('change', e => {
-    e.matches ? isPinnedDashboardCollapsed = false : isPinnedDashboardCollapsed = true;
+  mediaQuery.addEventListener('change', event => {
+    event.matches ? isPinnedDashboardCollapsed = false : isPinnedDashboardCollapsed = true;
     updatePinnedDashboardCollaspe();
   });
 
@@ -58,13 +71,14 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   updatePinnedDashboardCollaspe();
 
   const updateMessageDashboard = (selectedChannelId) => {
+    // Show/hide header based on selection and update channel name
     if (selectedChannelId === -1) {
       dashboardHeading.parentElement.classList.add('hidden');
-      return
+      return;
     }
     dashboardHeading.parentElement.classList.remove('hidden');
     dashboardHeading.innerText = getChannels().find(x => x.id === selectedChannelId).name;
-  }
+  };
 
   unsubscribers.push(subSelectedChannelId(selectedChannelId => {
     updateMessageDashboard(selectedChannelId);
@@ -74,7 +88,10 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
     updateMessageDashboard(getSelectedChannelId());
   }));
 
-  leaveChannelBtn.addEventListener('click', () => leaveChannel(getSelectedChannelId()).then(() => getChannelsAPI().then(data => setChannels(data))));
+  // Leave channel then refresh channel list
+  leaveChannelBtn.addEventListener('click', () => leaveChannel(getSelectedChannelId())
+    .then(() => getChannelsAPI()
+      .then(data => setChannels(data))));
 
   const loadPinnedMessages = () => {
     const mountpoint = document.getElementById('pinned-messages-mountpoint');
@@ -90,7 +107,7 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
           mountpoint.append(message);
         });
       });
-  }
+  };
 
   // Message content
   let loading = false;
@@ -99,6 +116,7 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   const messagesMountpoint = document.getElementById('message-mountpoint');
 
   const loadMessages = (isInitial = false) => {
+    // Load a page of messages, prepend older ones and maintain scroll position
     if (loading) return Promise.resolve();
     loading = true;
 
@@ -106,7 +124,12 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
 
     return getMessages(currentChannelId, startIdx)
       .then(data => {
-        const messagePromises = data.map(message => Message({ message, getSelectedChannelId, loadPinnedMessages }));
+        const messagePromises = data.map(message => Message({
+          message,
+          getSelectedChannelId,
+          loadPinnedMessages,
+        }));
+
         return Promise.all(messagePromises);
       })
       .then(messages => {
@@ -138,6 +161,7 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   unsubscribers.push(subChannels(() => resetAndLoadMessages()));
 
   messagesMountpoint.addEventListener('scroll', () => {
+    // Infinite scroll, load more when scrolled to top
     if (messagesMountpoint.scrollTop <= 0 && !loading) {
       const previousHeight = messagesMountpoint.scrollHeight;
       loadMessages().then(() => {
@@ -148,9 +172,6 @@ export const MessageDashboard = ({ subSelectedChannelId, getChannels, subChannel
   });
 
   resetAndLoadMessages();
-
   MessageInput({ getSelectedChannelId, loadPinnedMessages });
-
-
   loadPinnedMessages();
 };

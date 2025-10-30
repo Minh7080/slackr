@@ -1,4 +1,10 @@
-import { deleteMessage, getUserDetails, pinMessage, reactToMessage, unpinMessage, unReactToMessage } from '../lib/api.js';
+import {
+  deleteMessage,
+  getUserDetails,
+  pinMessage,
+  reactToMessage,
+  unpinMessage,
+  unReactToMessage } from '../lib/api.js';
 import { dateFormatter } from '../lib/dateFormatter.js';
 import { formatTextToHTML } from '../lib/formatTextToHTML.js';
 import { EditMessageInput } from './EditMessageInput.js';
@@ -23,33 +29,45 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
   const pinLabel = messageElement.querySelector('.message-pin-label');
   const pinBtn = messageElement.querySelector('.message-pin-button');
 
-  [avatarElement, usernameElement].forEach(element => element.addEventListener('click', () => ProfileModal({ userId: message.sender })))
+  [avatarElement, usernameElement].forEach(element => 
+    element.addEventListener('click', () => 
+      ProfileModal({ userId: message.sender })));
 
   const react = (reactString) => {
+    // Toggle a reaction by current user
     const userId = parseInt(localStorage.getItem('userId'));
     let promise;
 
     const hasReacted = message.reacts?.some(
-      react => react.user === userId && react.react === reactString
+      react => react.user === userId && react.react === reactString,
     );
+    
     if (hasReacted) {
       promise = unReactToMessage(getSelectedChannelId(), message.id, reactString);
-      const idxToRemove = message.reacts.findIndex(x => x.user === userId && x.react === reactString);
+
+      const idxToRemove = message.reacts.findIndex(x => {
+        return x.user === userId && x.react === reactString;
+      });
       message.reacts.splice(idxToRemove, 1);
     } else {
       promise = reactToMessage(getSelectedChannelId(), message.id, reactString);
+
       if (!message.reacts) message.reacts = [];
       message.reacts.push({ react: reactString, user: userId });
     }
     updateMessageDOM(false);
     promise.then(() => loadPinnedMessages());
-  }
+  };
 
   const updateMessageDOM = (scrollTo, currentMessage = message) => {
+    // Render content (text or image), timestamps, reacts, and pin visuals
     if (currentMessage.message) {
       contentElement.replaceChildren(formatTextToHTML(currentMessage.message));
     } else if (currentMessage.image) {
-      contentElement.replaceChildren(MessageImage({ src: currentMessage.image, messageId: currentMessage.id }));
+      contentElement.replaceChildren(MessageImage({
+        src: currentMessage.image,
+        messageId: currentMessage.id,
+      }));
     }
 
     timestamp.textContent = dateFormatter(currentMessage.sentAt);
@@ -57,7 +75,10 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
       editTimestamp.textContent = `(edited ${dateFormatter(currentMessage.editedAt)})`;
       editTimestamp.classList.remove('hidden');
     }
-    reactLabelsMountpoint.replaceChildren(MessageReactLabels({ reacts: message.reacts, reactFn: react }));
+    reactLabelsMountpoint.replaceChildren(MessageReactLabels({
+      reacts: message.reacts,
+      reactFn: react,
+    }));
 
     if (currentMessage.pinned) {
       pinLabel.classList.remove('hidden');
@@ -72,15 +93,23 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
     }
 
     if (scrollTo) messageElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }
+  };
 
   const interval = setInterval(() => updateMessageDOM(false, message), 5000);
 
-  [deleteBtn, editBtn, divider].forEach(x => x.hidden = message.sender !== parseInt(localStorage.userId));
+  [deleteBtn, editBtn, divider].forEach(element => {
+    element.hidden = message.sender !== parseInt(localStorage.userId);
+  });
   messageElement.setAttribute('message-id', message.id);
-  editBtn.addEventListener('click', () => EditMessageInput({ getSelectedChannelId, message, updateMessageDOM, loadPinnedMessages }));
+  editBtn.addEventListener('click', () => EditMessageInput({
+    getSelectedChannelId,
+    message,
+    updateMessageDOM,
+    loadPinnedMessages,
+  }));
 
   deleteBtn.addEventListener('click', () => {
+    // Delete then remove from DOM
     deleteMessage(getSelectedChannelId(), message.id)
       .then(() => {
         clearInterval(interval);
@@ -96,6 +125,7 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
   }));
 
   const pin = () => {
+    // Toggle pin state and refresh pinned list
     let promise;
     if (message.pinned) {
       promise = unpinMessage(getSelectedChannelId(), message.id);
@@ -106,22 +136,28 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
     }
     updateMessageDOM(false);
     promise.then(() => loadPinnedMessages());
-  }
+  };
 
   pinBtn.addEventListener('click', () => pin());
-  
-  messageElement.addEventListener('click', e => {
-    if (e.pointerType !== 'touch') {
-      document.querySelectorAll('.message-interacton').forEach(interaction => interaction.style.display = '');
+
+  // Reveal interaction bar on touch if you're on a touch device
+  messageElement.addEventListener('click', event => {
+    if (event.pointerType !== 'touch') {
+      document.querySelectorAll('.message-interacton')
+        .forEach(interaction => interaction.style.display = '');
       return;
     }
 
-    document.querySelectorAll('.message-interacton').forEach(interaction => interaction.style.display = '');
-    messageElement.querySelector('.message-interacton').style.display = 'flex'
-  })
+    document.querySelectorAll('.message-interacton')
+      .forEach(interaction => interaction.style.display = '');
 
+    messageElement.querySelector('.message-interacton').style.display = 'flex';
+  });
+
+  // Return the message element asynchronously
   return getUserDetails(message.sender).then(data => {
     usernameElement.textContent = data.name;
     avatarElement.src = data.image ? data.image : '../../assets/avatar.svg';
-  }).then(() => messageElement);
+  })
+    .then(() => messageElement);
 };

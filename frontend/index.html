@@ -378,9 +378,12 @@
         <div class="contents" id="channel-details-mountpoint">
         </div>
         <div class="bg-base-300 min-h-15 h-15 rounded-box shadow-md flex justify-between items-center px-3 w-full">
-          <div id="own-profile-mountpoint" class="flex-grow">
+          <div id="own-profile-mountpoint" class="flex-grow min-w-0 overflow-hidden">
           </div>
-          <button id="logout-button" title="Logout" class="btn btn-error btn-square btn-sm btn-outline"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg></button>
+          <button id="logout-button" title="Logout" class="btn btn-error btn-sm btn-outline btn btn-square">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
+            <span class="hidden">Logout</span>
+          </button>
         </div>
       </div>
     </template>
@@ -437,9 +440,9 @@
             <img src="" alt="avatar" id="avatar-image">
           </div>
         </div>
-        <div class="flex flex-col">
-          <p class="font-bold">my-profile</p>
-          <small>profile@mail.com</small>
+        <div class="flex flex-col min-w-0 flex-1">
+          <p class="font-bold truncate">my-profile</p>
+          <small class="truncate">profile@mail.com</small>
         </div>
       </div>
     </template>

@@ -288,14 +288,14 @@ const getMessages = (channelId, startIdx) => {
     });
 };
 
-const sendMessage = (channelId, message, image) => {
+const sendMessage = (channelId, message) => {
   return fetch(`${baseURL}/message/${channelId}`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
-    body: JSON.stringify({ message, image })
+    body: JSON.stringify({ message })
   })
     .then(res => res.json())
     .then(data => {
@@ -306,7 +306,27 @@ const sendMessage = (channelId, message, image) => {
         return data;
       }
     });
-}
+};
+
+const sendMessageImage = (channelId, image) => {
+  return fetch(`${baseURL}/message/${channelId}`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({ image })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    });
+};
 
 const deleteMessage = (channelId, messageId) => {
   return fetch(`${baseURL}/message/${channelId}/${messageId}`, {
@@ -461,6 +481,7 @@ export {
   inviteToChannel,
   getMessages,
   sendMessage,
+  sendMessageImage,
   deleteMessage,
   editMessage,
   reactToMessage,

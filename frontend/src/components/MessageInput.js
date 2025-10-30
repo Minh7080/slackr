@@ -4,7 +4,8 @@ import { Message } from './Message.js';
 
 export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
   const messageInputMountpoint = document.getElementById('message-input-mountpoint');
-  const messageInputDocument = document.getElementById('message-input-component').content.cloneNode(true);
+  const messageInputDocument = document.getElementById('message-input-component')
+  .content.cloneNode(true);
   messageInputMountpoint.replaceChildren(messageInputDocument);
 
   const messageMountpoint = document.getElementById('message-mountpoint');
@@ -17,8 +18,9 @@ export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
   const imagePreview = document.getElementById('message-input-image-preview');
 
   const updateSubmitBtn = () => {
-    submitBtn.disabled = inputElement.value.trim() === "" && !imageInput.files[0];
-  }
+    // Enable when either text or an image is present
+    submitBtn.disabled = inputElement.value.trim() === '' && !imageInput.files[0];
+  };
 
   inputElement.addEventListener('input', () => {
     inputElement.style.height = 'auto';
@@ -27,12 +29,13 @@ export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
   });
 
   const updateImageButton = () => {
+    // Disallow adding image while typing text
     if (inputElement.value.trim()) {
       addImageBtn.disabled = true;
     } else {
       addImageBtn.disabled = false;
     }
-  }
+  };
 
   inputElement.addEventListener('input', () => {
     updateImageButton();
@@ -41,6 +44,7 @@ export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
   addImageBtn.addEventListener('click', () => imageInput.click());
 
   const updateImagePreview = () => {
+    // Show/remove image preview and toggle text area
     if (imageInput.files[0]) {
       fileToDataUrl(imageInput.files[0]).then(url => {
         imagePreview.querySelector('img').src = url;
@@ -51,7 +55,7 @@ export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
       inputElement.style.display = '';
       imagePreview.style.display = 'none';
     }
-  }
+  };
 
   imagePreview.style.display = 'none';
   imageInput.addEventListener('change', () => {
@@ -65,18 +69,19 @@ export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
     imageInput.value = '';
     updateImagePreview();
     updateSubmitBtn();
-  })
+  });
 
   const submitMessage = () => {
+    // Send text or image and append latest message and scroll to it
     const messagePromise = inputElement.value
-    ? sendMessage(getSelectedChannelId(), inputElement.value)
-    : fileToDataUrl(imageInput.files[0])
-      .then(url => sendMessageImage(getSelectedChannelId(), url));
+      ? sendMessage(getSelectedChannelId(), inputElement.value)
+      : fileToDataUrl(imageInput.files[0])
+        .then(url => sendMessageImage(getSelectedChannelId(), url));
 
     messagePromise
       .then(() => {
         inputElement.value = '';
-        imageInput.value = ''
+        imageInput.value = '';
         submitBtn.disabled = true;
         inputElement.style.height = 'auto';
         updateImagePreview();
@@ -98,10 +103,10 @@ export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
     submitMessage();
   });
 
-  [addImageBtn, inputElement].forEach(element => element.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey && !submitBtn.disabled) {
-      e.preventDefault();
+  [addImageBtn, inputElement].forEach(element => element.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey && !submitBtn.disabled) {
+      event.preventDefault();
       submitMessage();
     }
-  }))
+  }));
 };

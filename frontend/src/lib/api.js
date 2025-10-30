@@ -66,6 +66,10 @@ const register = (email, password, name) => {
         return data;
       }
     })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
+    })
 }
 
 const login = (email, password) => {
@@ -88,6 +92,10 @@ const login = (email, password) => {
         return data;
       }
     })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
+    })
 }
 
 const logout = () => {
@@ -107,6 +115,10 @@ const logout = () => {
       } else {
         localStorage.removeItem('token');
       }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
     });
 }
 
@@ -124,9 +136,12 @@ const getChannels = () => {
         ToastError(data.error);
         return Promise.reject(data);
       } else {
-        return data.channels.filter(x => x.members.includes(parseInt(localStorage.getItem('userId'))) || x.private === false);
+        const filtered = data.channels.filter(x => x.members.includes(parseInt(localStorage.getItem('userId'))) || x.private === false);
+        channelsCacher.cache(filtered);
+        return filtered;
       }
-    });
+    })
+    .catch(() => channelsCacher.get())
 }
 
 const createChannel = (name, isPrivate, description) => {
@@ -150,6 +165,10 @@ const createChannel = (name, isPrivate, description) => {
       } else {
         return data.channelId;
       }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
     });
 };
 
@@ -168,6 +187,18 @@ const getChannelDetails = (channedId) => {
         return Promise.reject(data);
       } else {
         return data;
+      }
+    })
+    .catch(() => {
+      return {
+        name: 'Unknown',
+        creator: -1,
+        private: false,
+        description: 'No internet',
+        createdAt: '2011-10-05T14:48:00.000Z',
+        members: [
+          -1
+        ]
       }
     });
 };
@@ -192,6 +223,10 @@ const editChannelDetails = (channedId, newName, newDescription) => {
       } else {
         return data;
       }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
     });
 };
 
@@ -211,6 +246,10 @@ const getUsers = () => {
       } else {
         return data.users;
       }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
     });
 };
 
@@ -230,6 +269,15 @@ const getUserDetails = (userId) => {
       } else {
         return data;
       }
+    })
+    .catch(() => {
+      return {
+        id: userId,
+        name: `User ${userId === -1 ? 'Unknown' : userId}`,
+        email: '',
+        image: null,
+        bio: ''
+      };
     });
 };
 
@@ -250,6 +298,10 @@ const updateUserProfile = (email, name, bio, password, image) => {
       } else {
         return data;
       }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
     });
 }
 
@@ -288,6 +340,10 @@ const leaveChannel = (channelId) => {
       } else {
         return data;
       }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
     });
 };
 
@@ -324,8 +380,12 @@ const getMessages = (channelId, startIdx) => {
       if (data.error) {
         return Promise.reject(data);
       } else {
+        messageCacher.cache(channelId, data.messages, startIdx > 0);
         return data.messages;
       }
+    })
+    .catch(() => {
+      return messageCacher.get(channelId, startIdx);
     });
 };
 
@@ -369,6 +429,10 @@ const sendMessage = (channelId, message) => {
       } else {
         return data;
       }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
     });
 };
 
@@ -389,6 +453,10 @@ const sendMessageImage = (channelId, image) => {
       } else {
         return data;
       }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
     });
 };
 
@@ -408,6 +476,10 @@ const deleteMessage = (channelId, messageId) => {
       } else {
         return data;
       }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
     });
 };
 
@@ -428,6 +500,10 @@ const editMessage = (channelId, messageId, message, image) => {
       } else {
         return data;
       }
+    })
+    .catch((err) => {
+      ToastError('No internet connection');
+      return Promise.reject(err);
     });
 };
 
@@ -444,10 +520,13 @@ const reactToMessage = (channelId, messageId, react) => {
     .then(data => {
       if (data.error) {
         ToastError(data.error);
-        return Promise.reject(data);
+        return;
       } else {
         return data;
       }
+    })
+    .catch(() => {
+      ToastError('No internet connection');
     });
 }
 
@@ -464,10 +543,13 @@ const unReactToMessage = (channelId, messageId, react) => {
     .then(data => {
       if (data.error) {
         ToastError(data.error);
-        return Promise.reject(data);
+        return;
       } else {
         return data;
       }
+    })
+    .catch(() => {
+      ToastError('No internet connection');
     });
 }
 
@@ -483,10 +565,14 @@ const pinMessage = (channelId, messageId) => {
     .then(data => {
       if (data.error) {
         ToastError(data.error);
-        return Promise.reject(data);
+        console.log('hello');
+        return;
       } else {
         return data;
       }
+    })
+    .catch(() => {
+      ToastError('No internet connection');
     });
 };
 
@@ -502,10 +588,13 @@ const unpinMessage = (channelId, messageId) => {
     .then(data => {
       if (data.error) {
         ToastError(data.error);
-        return Promise.reject(data);
+        return;
       } else {
         return data;
       }
+    })
+    .catch(() => {
+      ToastError('No internet connection');
     });
 };
 

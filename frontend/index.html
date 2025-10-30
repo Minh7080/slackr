@@ -214,6 +214,25 @@
       </div>
     </template>
 
+    <template id="image-preview-modal">
+      <div class="relative flex flex-col items-center justify-center w-full h-full">
+        <button class="btn btn-circle btn-neutral absolute top-4 right-4 z-10" id="image-preview-close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <div class="flex items-center justify-center gap-4 w-full">
+          <button class="btn btn-circle btn-neutral flex-shrink-0" id="image-preview-prev">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="flex items-center justify-center flex-1">
+            <img src="" alt="Image message" id="image-preview-img" class="w-auto mx-auto max-w-[calc(100vw-10rem)] max-h-[calc(100vh-6rem)] md:max-w-[calc(100vw-20rem)] md:max-h-[calc(100vh-10rem)]">
+          </div>
+          <button class="btn btn-circle btn-neutral flex-shrink-0" id="image-preview-next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </template>
+
     <template id="message-input-component">
       <div
         class="border border-base-300 flex flex-col p-2 rounded-box shadow-md focus-within:border-blue-300 border-2"

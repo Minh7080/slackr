@@ -18,9 +18,9 @@ export const MessageImage = ({ src, messageId }) => {
     const images = [...messageMountpoint.querySelectorAll('.message-image')]
       .filter(img => img.src && img.src.trim() !== '');
 
-    const currentIndex = images.findIndex(img => {
-      img.src.trim() === src.trim() && parseInt(img.getAttribute('message-id')) === messageId;
-    });
+    const currentIndex = images.findIndex(img => (
+      img.src.trim() === src.trim() && parseInt(img.getAttribute('message-id')) === messageId
+    ));
     
     // Preview all images in the message list, starting from this one
     ImagePreview({

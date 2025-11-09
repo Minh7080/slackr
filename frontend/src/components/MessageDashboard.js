@@ -152,7 +152,7 @@ export const MessageDashboard = ({
     if (newChannelId !== currentChannelId) {
       currentChannelId = newChannelId;
       startIdx = 0;
-      messagesMountpoint.replaceChildren();
+      messagesMountpoint.innerHTML = '';
     }
     return loadMessages(true);
   };

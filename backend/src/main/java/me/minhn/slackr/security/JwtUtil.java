@@ -15,8 +15,8 @@ import java.util.Date;
 
 @Component
 @Slf4j
-public class jwtUtil {
-    private static final Logger log = LoggerFactory.getLogger(jwtUtil.class);
+public class JwtUtil {
+    private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
     @Value("${jwt.secret}")
     private String jwtSecret;
 

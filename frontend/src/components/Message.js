@@ -95,6 +95,8 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
     if (scrollTo) messageElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
   };
 
+  // TODO: WebSocket — this polls the backend every 5s to keep message state (edits, reacts,
+  // pin status) up to date. Replace with a WebSocket listener once the backend supports it.
   const interval = setInterval(() => updateMessageDOM(false, message), 5000);
 
   [deleteBtn, editBtn, divider].forEach(element => {

@@ -38,6 +38,8 @@ export const PinnedMessage = ({ message }) => {
 
   updateMessageDOM(message);
 
+  // TODO: WebSocket — polls every 5s to reflect pinned message changes. Replace with a
+  // WebSocket listener once the backend supports it.
   setInterval(() => updateMessageDOM(message), 5000);
 
   return getUserDetails(message.sender).then(data => {

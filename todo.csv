@@ -1,0 +1,8 @@
+File,Line,Type,Description
+frontend/src/lib/api.js,139,Backend Fix,"GET /channel should only return channels the user is a member of or that are public. Remove frontend filter once backend handles this."
+frontend/src/lib/api.js,223,Backend Fix,"GET /user should only return users who share at least one channel with the requesting user."
+frontend/src/lib/api.js,248,Security Risk,"GET /user/:userId returns the full profile (email, bio, image) of any user to any authenticated caller. Restrict email to the requesting user's own profile only."
+frontend/src/lib/api.js,410,Frontend Cleanup,"sendMessage and sendMessageImage are two separate functions hitting the same endpoint. Merge into one function once other TODOs are resolved."
+frontend/src/lib/api.js,599,Backend Fix,"Add a GET /message/pin/:channelId endpoint that returns only pinned messages. Current implementation fetches all message pages just to filter by pinned."
+frontend/src/components/Message.js,98,WebSocket,"Polls the backend every 5s to keep message state (edits, reacts, pin status) up to date. Replace with a WebSocket listener once the backend supports it."
+frontend/src/components/PinnedMessage.js,41,WebSocket,"Polls every 5s to reflect pinned message changes. Replace with a WebSocket listener once the backend supports it."

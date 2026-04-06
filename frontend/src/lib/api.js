@@ -1,7 +1,6 @@
 import { ToastError } from '../components/ToastError.js';
-import { BACKEND_PORT } from './config.js';
 
-const baseURL = `http://localhost:${BACKEND_PORT}`;
+const baseURL = (await (await fetch('/config')).json()).API_URL ?? 'http://localhost:5005';
 
 const channelsCacher = {
   cache(data) {
@@ -137,6 +136,8 @@ const getChannels = () => {
         ToastError(data.error);
         return Promise.reject(data);
       } else {
+        // TODO: backend fix — GET /channel should only return channels the user is a member of or that are public.
+        // The filtering below should be removed once the backend handles this correctly.
         const filtered = data.channels.filter(x => x.members.includes(parseInt(localStorage.getItem('userId'))) || x.private === false);
         channelsCacher.cache(filtered);
         return filtered;
@@ -219,6 +220,8 @@ const editChannelDetails = (channedId, newName, newDescription) => {
     });
 };
 
+// TODO: backend fix — GET /user should only return users who share at least one channel with
+// the requesting user, so emails aren't exposed to completely unrelated users.
 const getUsers = () => {
   return fetch(`${baseURL}/user`, {
     method: 'GET',
@@ -242,6 +245,9 @@ const getUsers = () => {
     });
 };
 
+// TODO: security risk — GET /user/:userId returns the full profile (email, bio, image) of any
+// user to any authenticated caller. Backend should restrict email to the requesting user's own
+// profile only.
 const getUserDetails = (userId) => {
   return fetch(`${baseURL}/user/${userId}`, {
     method: 'GET',
@@ -401,6 +407,9 @@ const getMessagesNoCache = (channelId, startIdx) => {
 };
 
 
+// TODO: backend fix — sendMessage and sendMessageImage are two separate functions hitting the
+// same endpoint. The backend already accepts both fields; the frontend should merge these into
+// one function. No backend change needed, just frontend cleanup once other TODOs are resolved.
 const sendMessage = (channelId, message) => {
   return fetch(`${baseURL}/message/${channelId}`, {
     method: 'POST',
@@ -587,6 +596,8 @@ const unpinMessage = (channelId, messageId) => {
     });
 };
 
+// TODO: backend fix — add a GET /message/pin/:channelId endpoint that returns only pinned messages.
+// The loop below fetches every message page just to filter by pinned, which is expensive.
 const getPinnedMessages = (channelId) => {
   let idx = 0;
   const messages = [];

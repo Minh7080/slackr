@@ -1,7 +1,7 @@
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import AsyncLock from 'async-lock';
-import { InputError, AccessError, } from './error';
+import { InputError, AccessError, } from './error.js';
 
 const lock = new AsyncLock();
 
@@ -62,11 +62,15 @@ const getNextMessageId = _ => {
 };
 
 const userLock = callback => new Promise((resolve, reject) => {
-  lock.acquire('userAuthLock', callback(resolve, reject));
+  lock.acquire('userAuthLock', () => {
+    try { callback(resolve, reject); } catch (e) { reject(e); }
+  });
 });
 
 const channelLock = callback => new Promise((resolve, reject) => {
-  lock.acquire('channelMutateLock', callback(resolve, reject));
+  lock.acquire('channelMutateLock', () => {
+    try { callback(resolve, reject); } catch (e) { reject(e); }
+  });
 });
 
 const randNum = max => Math.round(Math.random() * (max - Math.floor(max / 10)) + Math.floor(max / 10));

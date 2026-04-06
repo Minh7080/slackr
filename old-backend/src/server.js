@@ -4,9 +4,9 @@ import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import morgan from 'morgan';
 
-import { InputError, AccessError, } from './error';
-import { BACKEND_PORT } from './config';
-import swaggerDocument from '../swagger.json';
+import { InputError, AccessError, } from './error.js';
+import { BACKEND_PORT } from './config.js';
+import swaggerDocument from '../swagger.json' with { type: 'json' };
 import {
   save,
   getUserIdFromAuthorization,
@@ -33,7 +33,7 @@ import {
   unpinMessage,
   reactMessage,
   unreactMessage,
-} from './service';
+} from './service.js';
 
 const app = express();
 

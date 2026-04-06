@@ -1,4 +1,4 @@
 package me.minhn.slackr.authentication.dto;
 
-public record RegisterResponse(String token, String userId) {
+public record TokenResponse(String token, Long userId) {
 }

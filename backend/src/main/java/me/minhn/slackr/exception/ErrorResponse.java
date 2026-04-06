@@ -1,4 +1,4 @@
 package me.minhn.slackr.exception;
 
-public record ErrorResponse() {
+public record ErrorResponse(String message) {
 }

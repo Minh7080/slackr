@@ -1,4 +1,4 @@
 package me.minhn.slackr.authentication.dto;
 
-public record LoginRequest() {
+public record LoginRequest(String email, String password) {
 }

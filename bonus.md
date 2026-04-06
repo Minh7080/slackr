@@ -1,2 +1,0 @@
-- The cached messages cache multiple channels and not just recent channels.
-- A LOT of time spent to make the UI and UX feels polish.

@@ -3,5 +3,11 @@
     "@eslint/js": "^9.38.0",
     "eslint": "^9.38.0",
     "globals": "^16.4.0"
+  },
+  "scripts": {
+    "start": "http-server . -p 8080 --cors"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
   }
 }

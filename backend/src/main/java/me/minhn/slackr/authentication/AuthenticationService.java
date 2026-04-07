@@ -11,6 +11,7 @@ import me.minhn.slackr.user.UserEntity;
 import me.minhn.slackr.user.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,5 +53,14 @@ public class AuthenticationService {
 
         userRepository.save(newUser);
         return login(new LoginRequest(request.email(), request.password()));
+    }
+
+    public UserEntity getCurrentUser() {
+        String email =  SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
     }
 }

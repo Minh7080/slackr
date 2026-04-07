@@ -1,0 +1,41 @@
+services:
+  db:
+    restart: unless-stopped
+    image: postgres:18
+    env_file:
+      - ./env/db.env
+    environment:
+      - POSTGRES_HOST=db
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    restart: unless-stopped
+    build: ./backend/
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./env/db.env
+      - ./env/jwt_secret.env
+    environment:
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+
+  frontend:
+    restart: unless-stopped
+    build: ./frontend/
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./env/api_url.env
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

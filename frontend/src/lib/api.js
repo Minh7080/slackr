@@ -2,49 +2,6 @@ import { ToastError } from '../components/ToastError.js';
 
 const baseURL = (await (await fetch('/config')).json()).API_URL ?? 'http://localhost:5005';
 
-const channelsCacher = {
-  cache(data) {
-    localStorage.setItem('channelsCache', JSON.stringify(data));
-  },
-  get() {
-    const cache = localStorage.getItem('channelsCache');
-    return cache ? JSON.parse(cache) : [];
-  },
-};
-
-// Paginated message cache per channel 
-const messageCacher = {
-  pageSize: 25,
-  cache(channelId, data, append = false) {
-    const cacheKey = `messageCache:${channelId}`;
-    if (!append) {
-      localStorage.setItem(cacheKey, JSON.stringify(data));
-      return;
-    }
-
-    const existing = JSON.parse(localStorage.getItem(cacheKey)) || [];
-
-    const seenIds = new Set(existing.map(m => m.id));
-    const dedupAppends = [];
-    for (const m of data) {
-      if (!seenIds.has(m.id)) {
-        seenIds.add(m.id);
-        dedupAppends.push(m);
-      }
-    }
-
-    localStorage.setItem(cacheKey, JSON.stringify([...existing, ...dedupAppends]));
-  },
-  get(channelId, startIdx = 0) {
-    const cacheKey = `messageCache:${channelId}`;
-    const cache = localStorage.getItem(cacheKey);
-    if (!cache) return [];
-    const all = JSON.parse(cache);
-    if (startIdx <= 0) return all.slice(0, this.pageSize);
-    return all.slice(startIdx, startIdx + this.pageSize);
-  },
-};
-
 const register = (email, password, name) => {
   return fetch(`${baseURL}/auth/register`, {
     method: 'POST',
@@ -67,7 +24,9 @@ const register = (email, password, name) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -93,7 +52,9 @@ const login = (email, password) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -117,7 +78,35 @@ const logout = () => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
+    });
+};
+
+const check = () => {
+  return fetch(`${baseURL}/auth/check`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        ToastError(data.error);
+        localStorage.removeItem('token');
+        return Promise.reject(data);
+      } else {
+        return data;
+      }
+    })
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -136,14 +125,9 @@ const getChannels = () => {
         ToastError(data.error);
         return Promise.reject(data);
       } else {
-        // TODO: backend fix — GET /channel should only return channels the user is a member of or that are public.
-        // The filtering below should be removed once the backend handles this correctly.
-        const filtered = data.channels.filter(x => x.members.includes(parseInt(localStorage.getItem('userId'))) || x.private === false);
-        channelsCacher.cache(filtered);
-        return filtered;
+        return data.channels;
       }
-    })
-    .catch(() => channelsCacher.get());
+    });
 };
 
 const createChannel = (name, isPrivate, description) => {
@@ -169,7 +153,9 @@ const createChannel = (name, isPrivate, description) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -215,7 +201,9 @@ const editChannelDetails = (channedId, newName, newDescription) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -240,7 +228,9 @@ const getUsers = () => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -265,14 +255,11 @@ const getUserDetails = (userId) => {
         return data;
       }
     })
-    .catch(() => {
-      return {
-        id: userId,
-        name: `User ${userId === -1 ? 'Unknown' : userId}`,
-        email: '',
-        image: null,
-        bio: '',
-      };
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
     });
 };
 
@@ -295,7 +282,9 @@ const updateUserProfile = (email, name, bio, password, image) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -316,6 +305,12 @@ const joinChannel = (channelId) => {
       } else {
         return data;
       }
+    })
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
     });
 };
 
@@ -337,7 +332,9 @@ const leaveChannel = (channelId) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -359,6 +356,12 @@ const inviteToChannel = (channelId, userId) => {
       } else {
         return data;
       }
+    })
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
     });
 };
 
@@ -375,12 +378,14 @@ const getMessages = (channelId, startIdx) => {
       if (data.error) {
         return Promise.reject(data);
       } else {
-        messageCacher.cache(channelId, data.messages, startIdx > 0);
         return data.messages;
       }
     })
-    .catch(() => {
-      return messageCacher.get(channelId, startIdx);
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
     });
 };
 
@@ -401,7 +406,9 @@ const getMessagesNoCache = (channelId, startIdx) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -429,7 +436,9 @@ const sendMessage = (channelId, message) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -453,7 +462,9 @@ const sendMessageImage = (channelId, image) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -476,7 +487,9 @@ const deleteMessage = (channelId, messageId) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -500,7 +513,9 @@ const editMessage = (channelId, messageId, message, image) => {
       }
     })
     .catch((err) => {
-      ToastError('No internet connection');
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
       return Promise.reject(err);
     });
 };
@@ -523,8 +538,11 @@ const reactToMessage = (channelId, messageId, react) => {
         return data;
       }
     })
-    .catch(() => {
-      ToastError('No internet connection');
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
     });
 };
 
@@ -546,8 +564,11 @@ const unReactToMessage = (channelId, messageId, react) => {
         return data;
       }
     })
-    .catch(() => {
-      ToastError('No internet connection');
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
     });
 };
 
@@ -569,8 +590,11 @@ const pinMessage = (channelId, messageId) => {
         return data;
       }
     })
-    .catch(() => {
-      ToastError('No internet connection');
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
     });
 };
 
@@ -591,8 +615,11 @@ const unpinMessage = (channelId, messageId) => {
         return data;
       }
     })
-    .catch(() => {
-      ToastError('No internet connection');
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
     });
 };
 
@@ -614,8 +641,11 @@ const getPinnedMessages = (channelId) => {
           return messages.filter(message => message.pinned);
         }
       })
-      .catch(() => {
-        return messageCacher.get(channelId, idx).filter(message => message.pinned);
+      .catch((err) => {
+        if (err instanceof TypeError) {
+          ToastError('Network failure');
+        }
+        return Promise.reject(err);
       });
   };
   return loop();
@@ -625,6 +655,7 @@ export {
   register,
   login,
   logout,
+  check,
   getChannels,
   createChannel,
   getChannelDetails,

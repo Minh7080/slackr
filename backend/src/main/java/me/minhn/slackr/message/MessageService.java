@@ -9,7 +9,6 @@ import me.minhn.slackr.exception.ResourceNotFoundException;
 import me.minhn.slackr.exception.UnauthorizedException;
 import me.minhn.slackr.message.dto.*;
 import me.minhn.slackr.user.UserEntity;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +18,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MessageService {
+    private static final int PAGE_SIZE = 25;
+
     private final MessageRepository messageRepository;
     private final ReactRepository reactRepository;
     private final ChannelRepository channelRepository;
@@ -53,7 +54,7 @@ public class MessageService {
     public List<MessageResponse> getMessages(Long channelId, int start) {
         UserEntity user = authenticationService.getCurrentUser();
         getChannelAndCheckMembership(channelId, user);
-        return messageRepository.findByChannelIdOrderBySentAtDesc(channelId, PageRequest.of(start / 25, 25))
+        return messageRepository.findByChannelIdOrderBySentAtDesc(channelId, Math.max(start, 0), PAGE_SIZE)
                 .stream()
                 .map(this::toResponse)
                 .toList();

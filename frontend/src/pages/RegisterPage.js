@@ -1,4 +1,4 @@
-import { register } from '../lib/api.js';
+import { check, register } from '../lib/api.js';
 import { HomePage } from './HomePage.js';
 import { LoginPage } from './LoginPage.js';
 
@@ -13,6 +13,10 @@ export const RegisterPage = () => {
   const passwordRetype = document.getElementById('register-password-confirm');
   const name = document.getElementById('register-name');
   const loginLink = document.getElementById('login-link');
+
+  if (localStorage.getItem('token')) {
+    check().then(() => HomePage());
+  }
 
   form.addEventListener('submit', e => {
     e.preventDefault();

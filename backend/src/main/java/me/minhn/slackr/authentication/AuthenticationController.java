@@ -3,6 +3,7 @@ package me.minhn.slackr.authentication;
 import lombok.RequiredArgsConstructor;
 import me.minhn.slackr.authentication.dto.LoginRequest;
 import me.minhn.slackr.authentication.dto.RegisterRequest;
+import me.minhn.slackr.authentication.dto.TokenRequest;
 import me.minhn.slackr.authentication.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,11 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<TokenResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
+    }
+
+    @PostMapping("/check")
+    public ResponseEntity<Map> checkValidToken(@RequestBody TokenRequest request) {
+        return ResponseEntity.ok(Collections.emptyMap());
     }
 
     @PostMapping("/logout")

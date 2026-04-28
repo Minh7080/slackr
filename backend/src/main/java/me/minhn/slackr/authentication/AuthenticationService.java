@@ -1,26 +1,21 @@
 package me.minhn.slackr.authentication;
 
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import me.minhn.slackr.authentication.dto.LoginRequest;
 import me.minhn.slackr.authentication.dto.RegisterRequest;
-import me.minhn.slackr.authentication.dto.TokenRequest;
 import me.minhn.slackr.authentication.dto.TokenResponse;
 import me.minhn.slackr.exception.ResourceAlreadyExistsException;
 import me.minhn.slackr.exception.ResourceNotFoundException;
-import me.minhn.slackr.exception.UnauthorizedException;
 import me.minhn.slackr.security.JwtUtil;
 import me.minhn.slackr.user.UserEntity;
 import me.minhn.slackr.user.UserRepository;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

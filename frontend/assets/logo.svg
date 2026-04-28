@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Slackr tab icon">
+  <!-- Rounded square background -->
+  <rect x="4" y="4" width="56" height="56" rx="12" ry="12" fill="#dfe3f4"/>
+
+  <!-- Centered logo text -->
+  <text
+    x="32"
+    y="47"
+    text-anchor="middle"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="40"
+    font-weight="700"
+    letter-spacing="-1"
+    fill="#4338ca">
+    S<tspan fill="#ec4899">r</tspan>
+  </text>
+</svg>

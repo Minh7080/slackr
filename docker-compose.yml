@@ -14,6 +14,25 @@ services:
       timeout: 5s
       retries: 5
 
+  minio:
+    restart: unless-stopped
+    image: minio/minio:latest
+    env_file:
+      - ./env/minio.env
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_storage:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+
   backend:
     restart: unless-stopped
     build: ./backend/
@@ -22,10 +41,16 @@ services:
     env_file:
       - ./env/db.env
       - ./env/jwt_secret.env
+      - ./env/minio.env
     environment:
       - POSTGRES_HOST=db
+      - MINIO_HOST=minio
+      - MINIO_PUBLIC_HOST=localhost
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
 
   frontend:
     restart: unless-stopped
@@ -39,3 +64,4 @@ services:
 
 volumes:
   pgdata:
+  minio_storage:

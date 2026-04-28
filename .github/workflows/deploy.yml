@@ -40,5 +40,5 @@ jobs:
           ssh -T -i ~/.ssh/deploy_key \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             cd ~/slackr
-            docker compose up -d --build
+            docker compose --env-file env/prod.env up -d --build
           EOF

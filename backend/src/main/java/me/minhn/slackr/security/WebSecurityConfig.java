@@ -2,6 +2,7 @@ package me.minhn.slackr.security;
 
 import lombok.RequiredArgsConstructor;
 import me.minhn.slackr.user.UserDetailsServiceImp;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +27,9 @@ public class WebSecurityConfig {
     private final AuthEntryPointJwt unauthorizedHandler;
     private final AuthTokenFilter authTokenFilter;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     @Bean
     public AuthenticationManager authenticationManager (AuthenticationConfiguration configuration)
     throws Exception {
@@ -35,7 +39,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOrigins(List.of(frontendUrl));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

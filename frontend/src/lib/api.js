@@ -389,30 +389,6 @@ const getMessages = (channelId, startIdx) => {
     });
 };
 
-const getMessagesNoCache = (channelId, startIdx) => {
-  return fetch(`${baseURL}/message/${channelId}?start=${startIdx}`, {
-    method: 'GET',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        return Promise.reject(data);
-      } else {
-        return data.messages;
-      }
-    })
-    .catch((err) => {
-      if (err instanceof TypeError) {
-        ToastError('Network failure');
-      }
-      return Promise.reject(err);
-    });
-};
-
 
 // TODO: backend fix — sendMessage and sendMessageImage are two separate functions hitting the
 // same endpoint. The backend already accepts both fields; the frontend should merge these into
@@ -584,7 +560,6 @@ const pinMessage = (channelId, messageId) => {
     .then(data => {
       if (data.error) {
         ToastError(data.error);
-        console.log('hello');
         return;
       } else {
         return data;
@@ -647,6 +622,28 @@ const getPinnedMessages = (channelId) => {
     });
 };
 
+const uploadImage = (imageForm) => {
+  return fetch(`${baseURL}/image`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: imageForm,
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        return Promise.reject(data);
+      } else {
+        return data.fileName;
+      }
+    })
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
+    });
 };
 
 export {
@@ -674,4 +671,5 @@ export {
   pinMessage,
   unpinMessage,
   getPinnedMessages,
+  uploadImage,
 };

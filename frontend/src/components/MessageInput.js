@@ -1,4 +1,4 @@
-import { getMessages, sendMessage, sendMessageImage } from '../lib/api.js';
+import { getMessages, sendMessage, sendMessageImage, uploadImage } from '../lib/api.js';
 import { fileToDataUrl } from '../lib/imageToUrl.js';
 import { Message } from './Message.js';
 
@@ -75,8 +75,12 @@ export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
     // Send text or image and append latest message and scroll to it
     const messagePromise = inputElement.value
       ? sendMessage(getSelectedChannelId(), inputElement.value)
-      : fileToDataUrl(imageInput.files[0])
-        .then(url => sendMessageImage(getSelectedChannelId(), url));
+      : (() => {
+        const form = new FormData();
+        form.append('file', imageInput.files[0]);
+        return uploadImage(form)
+          .then(fileName => sendMessageImage(getSelectedChannelId(), fileName));
+      })();
 
     messagePromise
       .then(() => {

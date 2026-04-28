@@ -1,4 +1,4 @@
-import { updateUserProfile } from '../lib/api.js';
+import { updateUserProfile, uploadImage } from '../lib/api.js';
 import { fileToDataUrl } from '../lib/imageToUrl.js';
 import { ProfileModal } from './ProfileModal.js';
 
@@ -96,8 +96,10 @@ export const ProfileEditModal = ({ user }) => {
 
     let promise;
     if (imageInput.files.length >= 1) {
-      promise = fileToDataUrl(imageInput.files[0]).then(url => {
-        updateUserProfile(cleanedEmail, cleanedName, cleanedBio, cleanedPassword, url);
+      const form = new FormData();
+      form.append('file', imageInput.files[0]);
+      promise = uploadImage(form).then(fileName => {
+        updateUserProfile(cleanedEmail, cleanedName, cleanedBio, cleanedPassword, fileName);
       });
     } else {
       promise = updateUserProfile(cleanedEmail, cleanedName, cleanedBio, cleanedPassword);

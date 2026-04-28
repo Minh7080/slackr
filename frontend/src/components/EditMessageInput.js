@@ -1,4 +1,4 @@
-import { editMessage } from '../lib/api.js';
+import { editMessage, uploadImage } from '../lib/api.js';
 import { fileToDataUrl } from '../lib/imageToUrl.js';
 import { MessageInput } from './MessageInput.js';
 
@@ -134,8 +134,10 @@ export const EditMessageInput = ({
     
     if (imageInput.files[0]) {
       // New image selected
-      fileToDataUrl(imageInput.files[0]).then(url => {
-        finalImage = url;
+      const form = new FormData();
+      form.append('file', imageInput.files[0]);
+      uploadImage(form).then(fileName => {
+        finalImage = fileName;
         const finalMessage = inputElement.value.trim() || undefined;
         editMessage(getSelectedChannelId(), message.id, finalMessage, finalImage)
           .then(() => {

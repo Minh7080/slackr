@@ -44,7 +44,7 @@ services:
     environment:
       - POSTGRES_HOST=db
       - MINIO_HOST=minio
-      - MINIO_PUBLIC_HOST=localhost
+      - MINIO_PUBLIC_HOST=${MINIO_PUBLIC_HOST}
     depends_on:
       db:
         condition: service_healthy
@@ -56,11 +56,29 @@ services:
     build: ./frontend/
     ports:
       - "3000:3000"
-    env_file:
-      - ./env/api_url.env
+    environment:
+      - API_URL=${API_URL}
     depends_on:
       - backend
+
+  caddy:
+    restart: unless-stopped
+    image: caddy:latest
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+      - minio
 
 volumes:
   pgdata:
   minio_storage:
+  caddy_data:
+  caddy_config:

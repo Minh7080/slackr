@@ -1,0 +1,11 @@
+slackr.minhn.me {
+    reverse_proxy frontend:3000
+}
+
+api.slackr.minhn.me {
+    reverse_proxy backend:8080
+}
+
+minio.slackr.minhn.me {
+    reverse_proxy minio:9000
+}

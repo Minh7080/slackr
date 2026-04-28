@@ -1,0 +1,8 @@
+MINIO_ROOT_USER=ENC[AES256_GCM,data:Xnoxv+gMwm6j,iv:ui8w/lCHa8ND4Tai539ce2EHIWlz72Fob7fu+rlzclM=,tag:m5ufQuMRWT9eJAis7hloJg==,type:str]
+MINIO_ROOT_PASSWORD=ENC[AES256_GCM,data:qG23IrxauO2yTtzgTnyvU+FRSRS+VfXQei/gid8zS0bFu+gQWg67o2ZQtlQF,iv:v3Kz5Z53d4vH6bzmTmZYTmcQb8PBOUlZo7UKif1MreE=,tag:G9PK0YBdX9WuNrIPdNbwsQ==,type:str]
+sops_age__list_0__map_enc=-----BEGIN AGE ENCRYPTED FILE-----\nYWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQblBveWpubzJUL09aYWxx\nSFErOEFadTFIeHEwWEt2MXN2QTNYb0llcEFFCjE1bm1VdjlDN3ZwVmpVZE1EQnRI\ncDhCSlBkT2dxZ0dMQ0JjNmsydWV6SXcKLS0tIENVYWlXcFlGR2YvMUFhaWpQTEEr\nWkF5VVNiUTFramQyY2oyVkZKY1lUZEEKMyWz/ph/xisbMJLLqaPU5aYq8cMxPWRq\nnv1MxCs7o9uO7GnEY6zMvE+IwYMsQc1cgi4BQIpXw711bq7KVBW84A==\n-----END AGE ENCRYPTED FILE-----\n
+sops_age__list_0__map_recipient=age1am3842v6st4x5efrlhl0ly0yxfcdy69vceefmy8fdw5zl00suu0svunvc2
+sops_lastmodified=2026-04-28T12:33:04Z
+sops_mac=ENC[AES256_GCM,data:D+tnGNZj8wzL0kysIo8a97rwsfs/ujFqpOhyaVliR7O0dGBAftRDNyOaEl4u+gS+PpkhXm+bu/KU1IgqAK/AwmAfJ2sSRoouMaFwpmY2XCYl2JqHucb8V0uKg7OozxxiInCA246KaOV1r/Fhk0QCBzIMtYrOoJvWZCIrgi2zJBk=,iv:mQomn4rvudKQjubnCt23QcAfOGAYAxVZEasFYbnNC+I=,tag:4AadvniojJkVAeEfBMJ8FA==,type:str]
+sops_unencrypted_suffix=_unencrypted
+sops_version=3.12.2

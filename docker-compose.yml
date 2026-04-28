@@ -44,7 +44,8 @@ services:
     environment:
       - POSTGRES_HOST=db
       - MINIO_HOST=minio
-      - MINIO_PUBLIC_HOST=${MINIO_PUBLIC_HOST}
+      - MINIO_PUBLIC_URL=${MINIO_PUBLIC_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
     depends_on:
       db:
         condition: service_healthy

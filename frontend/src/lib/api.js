@@ -623,32 +623,30 @@ const unpinMessage = (channelId, messageId) => {
     });
 };
 
-// TODO: backend fix — add a GET /message/pin/:channelId endpoint that returns only pinned messages.
-// The loop below fetches every message page just to filter by pinned, which is expensive.
 const getPinnedMessages = (channelId) => {
-  let idx = 0;
-  const messages = [];
+  return fetch(`${baseURL}/message/pinned/${channelId}`, {
+    method: 'GET',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        return Promise.reject(data);
+      } else {
+        return data.messages.reverse();
+      }
+    })
+    .catch((err) => {
+      if (err instanceof TypeError) {
+        ToastError('Network failure');
+      }
+      return Promise.reject(err);
+    });
+};
 
-  const loop = () => {
-    return getMessagesNoCache(channelId, idx)
-      .then(data => {
-        messages.push(...data);
-        idx = messages.length;
-
-        if (data.length > 0) {
-          return loop();
-        } else {
-          return messages.filter(message => message.pinned);
-        }
-      })
-      .catch((err) => {
-        if (err instanceof TypeError) {
-          ToastError('Network failure');
-        }
-        return Promise.reject(err);
-      });
-  };
-  return loop();
 };
 
 export {

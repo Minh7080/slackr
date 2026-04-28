@@ -21,6 +21,11 @@ public class MessageController {
         return ResponseEntity.ok(Map.of("messages", messageService.getMessages(channelId, start)));
     }
 
+    @GetMapping("pinned/{channelId}")
+    public ResponseEntity<Map<String, List<MessageResponse>>> getPinnedMessages(@PathVariable Long channelId) {
+        return ResponseEntity.ok(Map.of("messages", messageService.getPinnedMessages(channelId)));
+    }
+
     @PostMapping("{channelId}")
     public ResponseEntity<EmptyResponse> sendMessage(@PathVariable Long channelId,
                                                      @RequestBody SendMessageRequest request) {

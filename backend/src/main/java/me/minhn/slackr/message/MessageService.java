@@ -55,9 +55,20 @@ public class MessageService {
         UserEntity user = authenticationService.getCurrentUser();
         getChannelAndCheckMembership(channelId, user);
         return messageRepository.findByChannelIdOrderBySentAtDesc(channelId, Math.max(start, 0), PAGE_SIZE)
+        return messageRepository.getMessages(channelId, Math.max(start, 0), PAGE_SIZE)
                 .stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    public List<MessageResponse> getPinnedMessages(Long channelId) {
+        UserEntity user = authenticationService.getCurrentUser();
+        getChannelAndCheckMembership(channelId, user);
+        return messageRepository.getPinnedMessages(channelId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+
     }
 
     @Transactional

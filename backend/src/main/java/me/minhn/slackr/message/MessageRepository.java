@@ -12,9 +12,18 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
                     + "ORDER BY sent_at DESC LIMIT :limit OFFSET :offset",
             nativeQuery = true
     )
-    List<MessageEntity> findByChannelIdOrderBySentAtDesc(
+    List<MessageEntity> getMessages(
             @Param("channelId") Long channelId,
             @Param("offset") int offset,
             @Param("limit") int limit
+    );
+
+    @Query(
+            value = "SELECT * FROM messages WHERE channel_id = :channelId AND pinned "
+                    + "ORDER BY sent_at DESC",
+            nativeQuery = true
+    )
+    List<MessageEntity> getPinnedMessages(
+            @Param("channelId") Long channelId
     );
 }

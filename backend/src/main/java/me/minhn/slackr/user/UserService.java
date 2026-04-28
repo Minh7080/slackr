@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.minhn.slackr.authentication.AuthenticationService;
 import me.minhn.slackr.exception.BadRequestException;
 import me.minhn.slackr.exception.ResourceNotFoundException;
+import me.minhn.slackr.minio.MinioService;
 import me.minhn.slackr.user.dto.UpdateUserRequest;
 import me.minhn.slackr.user.dto.UserBasicResponse;
 import me.minhn.slackr.user.dto.UserDetailResponse;
@@ -19,6 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
     private final PasswordEncoder passwordEncoder;
+    private final MinioService minioService;
 
     public List<UserBasicResponse> getAllUsers() {
         return userRepository.findAll().stream()
@@ -29,7 +31,9 @@ public class UserService {
     public UserDetailResponse getUserById(Long userId) {
         UserEntity user = userRepository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("user", "id", userId));
-        return new UserDetailResponse(user.getEmail(), user.getName(), user.getBio(), user.getImage());
+        String imageUrl = minioService.getPresignedUrl(user.getImage());
+
+        return new UserDetailResponse(user.getEmail(), user.getName(), user.getBio(), imageUrl);
     }
 
     @Transactional

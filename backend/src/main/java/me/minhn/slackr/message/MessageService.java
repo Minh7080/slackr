@@ -8,6 +8,7 @@ import me.minhn.slackr.exception.BadRequestException;
 import me.minhn.slackr.exception.ResourceNotFoundException;
 import me.minhn.slackr.exception.UnauthorizedException;
 import me.minhn.slackr.message.dto.*;
+import me.minhn.slackr.minio.MinioService;
 import me.minhn.slackr.user.UserEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ public class MessageService {
     private final ReactRepository reactRepository;
     private final ChannelRepository channelRepository;
     private final AuthenticationService authenticationService;
+    private final MinioService minioService;
 
     private ChannelEntity getChannelAndCheckMembership(Long channelId, UserEntity user) {
         ChannelEntity channel = channelRepository.findById(channelId).orElseThrow(() ->
@@ -39,7 +41,7 @@ public class MessageService {
         return new MessageResponse(
                 msg.getId(),
                 msg.getMessage(),
-                msg.getImage(),
+                minioService.getPresignedUrl(msg.getImage()),
                 msg.getSender().getId(),
                 msg.getSentAt().toString(),
                 msg.isEdited(),
@@ -54,7 +56,6 @@ public class MessageService {
     public List<MessageResponse> getMessages(Long channelId, int start) {
         UserEntity user = authenticationService.getCurrentUser();
         getChannelAndCheckMembership(channelId, user);
-        return messageRepository.findByChannelIdOrderBySentAtDesc(channelId, Math.max(start, 0), PAGE_SIZE)
         return messageRepository.getMessages(channelId, Math.max(start, 0), PAGE_SIZE)
                 .stream()
                 .map(this::toResponse)

@@ -17,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
-@Slf4j
 public class JwtUtil {
     private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
     @Value("${jwt.secret}")

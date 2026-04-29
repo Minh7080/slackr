@@ -10,6 +10,7 @@ import me.minhn.slackr.exception.UnauthorizedException;
 import me.minhn.slackr.message.dto.*;
 import me.minhn.slackr.minio.MinioService;
 import me.minhn.slackr.user.UserEntity;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class MessageService {
     private final ChannelRepository channelRepository;
     private final AuthenticationService authenticationService;
     private final MinioService minioService;
+    private final ApplicationEventPublisher eventPublisher;
 
     private ChannelEntity getChannelAndCheckMembership(Long channelId, UserEntity user) {
         ChannelEntity channel = channelRepository.findById(channelId).orElseThrow(() ->
@@ -81,7 +83,11 @@ public class MessageService {
             throw new BadRequestException("Message must have content or an image");
         }
 
-        messageRepository.save(new MessageEntity(request.message(), request.image(), user, channel));
+        MessageEntity saved = messageRepository.save(new MessageEntity(request.message(), request.image(), user, channel));
+        eventPublisher.publishEvent(new ChannelBroadcastEvent(
+                channelId,
+                new ChannelEvent(ChannelEvent.MESSAGE_SENT, new ChannelEvent.MessageSent(toResponse(saved)))
+        ));
     }
 
     @Transactional
@@ -103,7 +109,11 @@ public class MessageService {
         if (request.image() != null) message.setImage(request.image());
         message.setEdited(true);
         message.setEditedAt(Instant.now());
-        messageRepository.save(message);
+        MessageEntity saved = messageRepository.save(message);
+        eventPublisher.publishEvent(new ChannelBroadcastEvent(
+                channelId,
+                new ChannelEvent(ChannelEvent.MESSAGE_UPDATED, new ChannelEvent.MessageUpdated(toResponse(saved)))
+        ));
     }
 
     @Transactional
@@ -119,6 +129,10 @@ public class MessageService {
         }
 
         messageRepository.delete(message);
+        eventPublisher.publishEvent(new ChannelBroadcastEvent(
+                channelId,
+                new ChannelEvent(ChannelEvent.MESSAGE_DELETED, new ChannelEvent.MessageDeleted(messageId))
+        ));
     }
 
     @Transactional
@@ -135,6 +149,10 @@ public class MessageService {
 
         message.setPinned(true);
         messageRepository.save(message);
+        eventPublisher.publishEvent(new ChannelBroadcastEvent(
+                channelId,
+                new ChannelEvent(ChannelEvent.MESSAGE_PINNED, new ChannelEvent.MessagePinned(messageId))
+        ));
     }
 
     @Transactional
@@ -151,6 +169,10 @@ public class MessageService {
 
         message.setPinned(false);
         messageRepository.save(message);
+        eventPublisher.publishEvent(new ChannelBroadcastEvent(
+                channelId,
+                new ChannelEvent(ChannelEvent.MESSAGE_UNPINNED, new ChannelEvent.MessageUnpinned(messageId))
+        ));
     }
 
     @Transactional
@@ -169,6 +191,11 @@ public class MessageService {
         }
 
         reactRepository.save(new ReactEntity(request.react(), user, message));
+        eventPublisher.publishEvent(new ChannelBroadcastEvent(
+                channelId,
+                new ChannelEvent(ChannelEvent.REACTION_ADDED,
+                        new ChannelEvent.ReactionAdded(messageId, request.react(), user.getId()))
+        ));
     }
 
     @Transactional
@@ -184,5 +211,10 @@ public class MessageService {
                 .orElseThrow(() -> new BadRequestException("React not found"));
 
         reactRepository.delete(react);
+        eventPublisher.publishEvent(new ChannelBroadcastEvent(
+                channelId,
+                new ChannelEvent(ChannelEvent.REACTION_REMOVED,
+                        new ChannelEvent.ReactionRemoved(messageId, request.react(), user.getId()))
+        ));
     }
 }

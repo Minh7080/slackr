@@ -3,7 +3,9 @@ import { MessageDashboardUnaccessable } from '../components/MessageDashboardUnac
 import { MessageDashboardWarning } from '../components/MessageDashboardWarning.js';
 import { OwnProfile } from '../components/OwnProfile.js';
 import { Sidebar } from '../components/Sidebar.js';
+import { ToastError } from '../components/ToastError.js';
 import { getChannels as getChannelsAPI, getMessages, logout } from '../lib/api.js';
+import { connectWs, disconnectWs, subscribeErrors } from '../lib/ws.js';
 import { LoginPage } from './LoginPage.js';
 import {
   getSelectedChannelId,
@@ -19,6 +21,9 @@ export const HomePage = () => {
   const page = document.getElementById('home-page').content.cloneNode(true);
   main.replaceChildren(page);
 
+  connectWs()
+    .then(() => subscribeErrors((payload) => ToastError(payload?.error || 'Realtime error')))
+    .catch(() => ToastError('Failed to connect to realtime channel'));
 
   getChannelsAPI().then(data => {
     setChannels(data);
@@ -58,6 +63,7 @@ export const HomePage = () => {
 
   const logoutBtn = document.getElementById('logout-button');
   logoutBtn.addEventListener('click', () => {
+    disconnectWs();
     logout().finally(() => LoginPage());
   });
 

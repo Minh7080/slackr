@@ -71,14 +71,18 @@ export const subscribeErrors = (handler) =>
   subscribeRaw('/user/queue/errors', handler);
 
 const publish = (destination, body) => {
-  if (!client || !client.connected) {
+  if (!connectedPromise) {
     return Promise.reject(new Error('WebSocket not connected'));
   }
-  client.publish({
-    destination,
-    body: body === undefined ? '' : JSON.stringify(body),
+  return connectedPromise.then(() => {
+    if (!client || !client.connected) {
+      throw new Error('WebSocket not connected');
+    }
+    client.publish({
+      destination,
+      body: body === undefined ? '' : JSON.stringify(body),
+    });
   });
-  return Promise.resolve();
 };
 
 export const wsSendMessage = (channelId, body) =>

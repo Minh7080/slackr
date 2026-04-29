@@ -1,6 +1,15 @@
 import { ToastError } from '../components/ToastError.js';
+import {
+  wsSendMessage,
+  wsUpdateMessage,
+  wsDeleteMessage,
+  wsPinMessage,
+  wsUnpinMessage,
+  wsReactMessage,
+  wsUnreactMessage,
+} from './ws.js';
 
-const baseURL = (await (await fetch('/config')).json()).API_URL ?? 'http://localhost:5005';
+export const baseURL = (await (await fetch('/config')).json()).API_URL ?? 'http://localhost:5005';
 
 const register = (email, password, name) => {
   return fetch(`${baseURL}/auth/register`, {
@@ -390,213 +399,34 @@ const getMessages = (channelId, startIdx) => {
 };
 
 
-// TODO: backend fix — sendMessage and sendMessageImage are two separate functions hitting the
-// same endpoint. The backend already accepts both fields; the frontend should merge these into
-// one function. No backend change needed, just frontend cleanup once other TODOs are resolved.
-const sendMessage = (channelId, message) => {
-  return fetch(`${baseURL}/message/${channelId}`, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-    body: JSON.stringify({ message }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        ToastError(data.error);
-        return Promise.reject(data);
-      } else {
-        return data;
-      }
-    })
-    .catch((err) => {
-      if (err instanceof TypeError) {
-        ToastError('Network failure');
-      }
-      return Promise.reject(err);
-    });
-};
+const wrapWsFailure = (promise) => promise.catch((err) => {
+  ToastError(err.message || 'Realtime channel unavailable');
+  return Promise.reject(err);
+});
 
-const sendMessageImage = (channelId, image) => {
-  return fetch(`${baseURL}/message/${channelId}`, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-    body: JSON.stringify({ image }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        ToastError(data.error);
-        return Promise.reject(data);
-      } else {
-        return data;
-      }
-    })
-    .catch((err) => {
-      if (err instanceof TypeError) {
-        ToastError('Network failure');
-      }
-      return Promise.reject(err);
-    });
-};
+const sendMessage = (channelId, message) =>
+  wrapWsFailure(wsSendMessage(channelId, { message }));
 
-const deleteMessage = (channelId, messageId) => {
-  return fetch(`${baseURL}/message/${channelId}/${messageId}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        ToastError(data.error);
-        return Promise.reject(data);
-      } else {
-        return data;
-      }
-    })
-    .catch((err) => {
-      if (err instanceof TypeError) {
-        ToastError('Network failure');
-      }
-      return Promise.reject(err);
-    });
-};
+const sendMessageImage = (channelId, image) =>
+  wrapWsFailure(wsSendMessage(channelId, { image }));
 
-const editMessage = (channelId, messageId, message, image) => {
-  return fetch(`${baseURL}/message/${channelId}/${messageId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-    body: JSON.stringify({ message, image }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        ToastError(data.error);
-        return Promise.reject(data);
-      } else {
-        return data;
-      }
-    })
-    .catch((err) => {
-      if (err instanceof TypeError) {
-        ToastError('Network failure');
-      }
-      return Promise.reject(err);
-    });
-};
+const deleteMessage = (channelId, messageId) =>
+  wrapWsFailure(wsDeleteMessage(channelId, messageId));
 
-const reactToMessage = (channelId, messageId, react) => {
-  return fetch(`${baseURL}/message/react/${channelId}/${messageId}`, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-    body: JSON.stringify({ react }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        ToastError(data.error);
-        return;
-      } else {
-        return data;
-      }
-    })
-    .catch((err) => {
-      if (err instanceof TypeError) {
-        ToastError('Network failure');
-      }
-      return Promise.reject(err);
-    });
-};
+const editMessage = (channelId, messageId, message, image) =>
+  wrapWsFailure(wsUpdateMessage(channelId, messageId, { message, image }));
 
-const unReactToMessage = (channelId, messageId, react) => {
-  return fetch(`${baseURL}/message/unreact/${channelId}/${messageId}`, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-    body: JSON.stringify({ react }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        ToastError(data.error);
-        return;
-      } else {
-        return data;
-      }
-    })
-    .catch((err) => {
-      if (err instanceof TypeError) {
-        ToastError('Network failure');
-      }
-      return Promise.reject(err);
-    });
-};
+const reactToMessage = (channelId, messageId, react) =>
+  wrapWsFailure(wsReactMessage(channelId, messageId, react));
 
-const pinMessage = (channelId, messageId) => {
-  return fetch(`${baseURL}/message/pin/${channelId}/${messageId}`, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        ToastError(data.error);
-        return;
-      } else {
-        return data;
-      }
-    })
-    .catch((err) => {
-      if (err instanceof TypeError) {
-        ToastError('Network failure');
-      }
-      return Promise.reject(err);
-    });
-};
+const unReactToMessage = (channelId, messageId, react) =>
+  wrapWsFailure(wsUnreactMessage(channelId, messageId, react));
 
-const unpinMessage = (channelId, messageId) => {
-  return fetch(`${baseURL}/message/unpin/${channelId}/${messageId}`, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        ToastError(data.error);
-        return;
-      } else {
-        return data;
-      }
-    })
-    .catch((err) => {
-      if (err instanceof TypeError) {
-        ToastError('Network failure');
-      }
-      return Promise.reject(err);
-    });
-};
+const pinMessage = (channelId, messageId) =>
+  wrapWsFailure(wsPinMessage(channelId, messageId));
+
+const unpinMessage = (channelId, messageId) =>
+  wrapWsFailure(wsUnpinMessage(channelId, messageId));
 
 const getPinnedMessages = (channelId) => {
   return fetch(`${baseURL}/message/pinned/${channelId}`, {

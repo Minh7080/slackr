@@ -65,7 +65,7 @@ public class WebSecurityConfig {
                                 SessionCreationPolicy.STATELESS
                         ))
                 .authorizeHttpRequests(a ->
-                        a.requestMatchers("/auth/register", "/auth/login").permitAll()
+                        a.requestMatchers("/auth/register", "/auth/login", "/chat/**").permitAll()
                                 .anyRequest().authenticated());
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -1,11 +1,8 @@
 package me.minhn.slackr.websocket;
 
 import lombok.RequiredArgsConstructor;
-import me.minhn.slackr.channel.ChannelEntity;
 import me.minhn.slackr.channel.ChannelRepository;
 import me.minhn.slackr.security.JwtUtil;
-import me.minhn.slackr.user.UserEntity;
-import me.minhn.slackr.user.UserRepository;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
@@ -26,7 +23,6 @@ public class WebsocketAuthInterceptor implements ExecutorChannelInterceptor {
     private static final String CHANNEL_TOPIC_PREFIX = "/topic/channel/";
 
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
     private final ChannelRepository channelRepository;
 
     @Override
@@ -105,15 +101,7 @@ public class WebsocketAuthInterceptor implements ExecutorChannelInterceptor {
             throw new IllegalArgumentException("Not authenticated");
         }
 
-        UserEntity user = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        ChannelEntity channelEntity = channelRepository.findById(channelId)
-                .orElseThrow(() -> new IllegalArgumentException("Channel not found: " + channelId));
-
-        boolean isMember = channelEntity.getMembers().stream()
-                .anyMatch(m -> m.getId().equals(user.getId()));
-        if (!isMember) {
+        if (!channelRepository.isMemberByEmail(channelId, auth.getName())) {
             throw new IllegalArgumentException("Not a member of channel " + channelId);
         }
     }

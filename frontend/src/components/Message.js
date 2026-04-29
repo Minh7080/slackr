@@ -34,29 +34,16 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
       ProfileModal({ userId: message.sender })));
 
   const react = (reactString) => {
-    // Toggle a reaction by current user
     const userId = parseInt(localStorage.getItem('userId'));
-    let promise;
-
     const hasReacted = message.reacts?.some(
       react => react.user === userId && react.react === reactString,
     );
-    
+
     if (hasReacted) {
-      promise = unReactToMessage(getSelectedChannelId(), message.id, reactString);
-
-      const idxToRemove = message.reacts.findIndex(x => {
-        return x.user === userId && x.react === reactString;
-      });
-      message.reacts.splice(idxToRemove, 1);
+      unReactToMessage(getSelectedChannelId(), message.id, reactString);
     } else {
-      promise = reactToMessage(getSelectedChannelId(), message.id, reactString);
-
-      if (!message.reacts) message.reacts = [];
-      message.reacts.push({ react: reactString, user: userId });
+      reactToMessage(getSelectedChannelId(), message.id, reactString);
     }
-    updateMessageDOM(false);
-    promise.then(() => loadPinnedMessages());
   };
 
   const updateMessageDOM = (scrollTo, currentMessage = message) => {
@@ -95,10 +82,6 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
     if (scrollTo) messageElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
   };
 
-  // TODO: WebSocket — this polls the backend every 5s to keep message state (edits, reacts,
-  // pin status) up to date. Replace with a WebSocket listener once the backend supports it.
-  const interval = setInterval(() => updateMessageDOM(false, message), 5000);
-
   [deleteBtn, editBtn, divider].forEach(element => {
     element.hidden = message.sender !== parseInt(localStorage.userId);
   });
@@ -106,18 +89,11 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
   editBtn.addEventListener('click', () => EditMessageInput({
     getSelectedChannelId,
     message,
-    updateMessageDOM,
     loadPinnedMessages,
   }));
 
   deleteBtn.addEventListener('click', () => {
-    // Delete then remove from DOM
-    deleteMessage(getSelectedChannelId(), message.id)
-      .then(() => {
-        clearInterval(interval);
-        messageElement.remove();
-        loadPinnedMessages();
-      });
+    deleteMessage(getSelectedChannelId(), message.id);
   });
 
   updateMessageDOM(false);
@@ -127,17 +103,11 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
   }));
 
   const pin = () => {
-    // Toggle pin state and refresh pinned list
-    let promise;
     if (message.pinned) {
-      promise = unpinMessage(getSelectedChannelId(), message.id);
-      message.pinned = false;
+      unpinMessage(getSelectedChannelId(), message.id);
     } else {
-      promise = pinMessage(getSelectedChannelId(), message.id);
-      message.pinned = true;
+      pinMessage(getSelectedChannelId(), message.id);
     }
-    updateMessageDOM(false);
-    promise.then(() => loadPinnedMessages());
   };
 
   pinBtn.addEventListener('click', () => pin());
@@ -155,6 +125,12 @@ export const Message = ({ message, getSelectedChannelId, loadPinnedMessages }) =
 
     messageElement.querySelector('.message-interacton').style.display = 'flex';
   });
+
+  messageElement.message = message;
+  messageElement.updateMessage = (newMessage) => {
+    Object.assign(message, newMessage);
+    updateMessageDOM(false);
+  };
 
   // Return the message element asynchronously
   return getUserDetails(message.sender).then(data => {

@@ -2,10 +2,9 @@ import { editMessage, uploadImage } from '../lib/api.js';
 import { fileToDataUrl } from '../lib/imageToUrl.js';
 import { MessageInput } from './MessageInput.js';
 
-export const EditMessageInput = ({ 
+export const EditMessageInput = ({
   getSelectedChannelId,
   message,
-  updateMessageDOM,
   loadPinnedMessages,
 }) => {
   // Clone template and place it on the mountpoint
@@ -130,53 +129,18 @@ export const EditMessageInput = ({
   });
 
   const submitMessage = () => {
-    let finalImage = undefined;
-    
+    const finalText = inputElement.value.trim() || undefined;
+
+    const publish = (finalImage) =>
+      editMessage(getSelectedChannelId(), message.id, finalText, finalImage)
+        .then(() => MessageInput({ getSelectedChannelId, loadPinnedMessages }));
+
     if (imageInput.files[0]) {
-      // New image selected
       const form = new FormData();
       form.append('file', imageInput.files[0]);
-      uploadImage(form).then(fileName => {
-        finalImage = fileName;
-        const finalMessage = inputElement.value.trim() || undefined;
-        editMessage(getSelectedChannelId(), message.id, finalMessage, finalImage)
-          .then(() => {
-            message.message = inputElement.value;
-            if (finalImage) {
-              message.image = finalImage;
-            } else {
-              delete message.image;
-            }
-            message.edited = true;
-            message.editedAt = new Date();
-            updateMessageDOM(true);
-          })
-          .then(() => {
-            MessageInput({ getSelectedChannelId, loadPinnedMessages });
-            loadPinnedMessages();
-          });
-      });
+      uploadImage(form).then(fileName => publish(fileName));
     } else {
-      // No new image keep original if not removed, otherwise remove it
-      finalImage = (originalHasImage && !imageRemoved) ? message.image : undefined;
-      const finalMessage = inputElement.value.trim() || undefined;
-      
-      editMessage(getSelectedChannelId(), message.id, finalMessage, finalImage)
-        .then(() => {
-          message.message = inputElement.value;
-          if (finalImage) {
-            message.image = finalImage;
-          } else {
-            delete message.image;
-          }
-          message.edited = true;
-          message.editedAt = new Date();
-          updateMessageDOM(true);
-        })
-        .then(() => {
-          MessageInput({ getSelectedChannelId, loadPinnedMessages });
-          loadPinnedMessages();
-        });
+      publish((originalHasImage && !imageRemoved) ? message.image : undefined);
     }
   };
 

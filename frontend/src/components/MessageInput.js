@@ -1,6 +1,5 @@
-import { getMessages, sendMessage, sendMessageImage, uploadImage } from '../lib/api.js';
+import { sendMessage, sendMessageImage, uploadImage } from '../lib/api.js';
 import { fileToDataUrl } from '../lib/imageToUrl.js';
-import { Message } from './Message.js';
 
 export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
   const messageInputMountpoint = document.getElementById('message-input-mountpoint');
@@ -8,7 +7,6 @@ export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
   .content.cloneNode(true);
   messageInputMountpoint.replaceChildren(messageInputDocument);
 
-  const messageMountpoint = document.getElementById('message-mountpoint');
   const inputElement = document.getElementById('message-input');
   const submitBtn = document.getElementById('message-submit-button');
   submitBtn.disabled = true;
@@ -72,7 +70,6 @@ export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
   });
 
   const submitMessage = () => {
-    // Send text or image and append latest message and scroll to it
     const messagePromise = inputElement.value
       ? sendMessage(getSelectedChannelId(), inputElement.value)
       : (() => {
@@ -82,25 +79,14 @@ export const MessageInput = ({ getSelectedChannelId, loadPinnedMessages }) => {
           .then(fileName => sendMessageImage(getSelectedChannelId(), fileName));
       })();
 
-    messagePromise
-      .then(() => {
-        inputElement.value = '';
-        imageInput.value = '';
-        submitBtn.disabled = true;
-        inputElement.style.height = 'auto';
-        updateImagePreview();
-        updateImageButton();
-      })
-      .then(() => {
-        return getMessages(getSelectedChannelId(), 0);
-      })
-      .then(messages => {
-        return Message({ message: messages[0], getSelectedChannelId, loadPinnedMessages });
-      })
-      .then(message => {
-        messageMountpoint.appendChild(message);
-        message.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      });
+    messagePromise.then(() => {
+      inputElement.value = '';
+      imageInput.value = '';
+      submitBtn.disabled = true;
+      inputElement.style.height = 'auto';
+      updateImagePreview();
+      updateImageButton();
+    });
   };
 
   submitBtn.addEventListener('click', () => {

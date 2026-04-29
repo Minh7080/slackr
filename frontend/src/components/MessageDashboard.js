@@ -4,6 +4,7 @@ import {
   getMessages,
   getPinnedMessages,
 } from '../lib/api.js';
+import { subscribeChannel } from '../lib/ws.js';
 import { InviteUserModal } from './InviteUserModal.js';
 import { Message } from './Message.js';
 import { MessageInput } from './MessageInput.js';
@@ -114,6 +115,7 @@ export const MessageDashboard = ({
   let currentChannelId = getSelectedChannelId();
   let startIdx = 0;
   const messagesMountpoint = document.getElementById('message-mountpoint');
+  const messagesById = new Map();
 
   const loadMessages = (isInitial = false) => {
     // Load a page of messages, prepend older ones and maintain scroll position
@@ -133,7 +135,10 @@ export const MessageDashboard = ({
         return Promise.all(messagePromises);
       })
       .then(messages => {
-        messages.forEach(x => messagesMountpoint.prepend(x));
+        messages.forEach(element => {
+          messagesMountpoint.prepend(element);
+          messagesById.set(element.message.id, { element });
+        });
 
         if (isInitial && messagesMountpoint.lastElementChild) {
           messagesMountpoint.scrollTop = messagesMountpoint.scrollHeight;
@@ -153,9 +158,88 @@ export const MessageDashboard = ({
       currentChannelId = newChannelId;
       startIdx = 0;
       messagesMountpoint.innerHTML = '';
+      messagesById.clear();
     }
     return loadMessages(true);
   };
+
+  const handleChannelEvent = (event) => {
+    if (!event || !event.type) return;
+    const { type, payload } = event;
+
+    if (type === 'MESSAGE_SENT') {
+      const incoming = payload.message;
+      if (messagesById.has(incoming.id)) return;
+      const wasNearBottom =
+        messagesMountpoint.scrollHeight
+        - messagesMountpoint.scrollTop
+        - messagesMountpoint.clientHeight < 50;
+      const isOwn = incoming.sender === parseInt(localStorage.getItem('userId'));
+      Message({
+        message: incoming,
+        getSelectedChannelId,
+        loadPinnedMessages,
+      }).then(element => {
+        if (!messagesById.has(incoming.id)) {
+          messagesById.set(incoming.id, { element });
+          messagesMountpoint.appendChild(element);
+        }
+        if (isOwn || wasNearBottom) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+      });
+      return;
+    }
+
+    if (type === 'MESSAGE_UPDATED') {
+      const entry = messagesById.get(payload.message.id);
+      if (entry) entry.element.updateMessage(payload.message);
+      return;
+    }
+
+    if (type === 'MESSAGE_DELETED') {
+      const entry = messagesById.get(payload.messageId);
+      if (entry) {
+        entry.element.remove();
+        messagesById.delete(payload.messageId);
+      }
+      loadPinnedMessages();
+      return;
+    }
+
+    if (type === 'MESSAGE_PINNED' || type === 'MESSAGE_UNPINNED') {
+      const entry = messagesById.get(payload.messageId);
+      if (entry) entry.element.updateMessage({ pinned: type === 'MESSAGE_PINNED' });
+      loadPinnedMessages();
+      return;
+    }
+
+    if (type === 'REACTION_ADDED') {
+      const entry = messagesById.get(payload.messageId);
+      if (!entry) return;
+      const current = entry.element.message.reacts || [];
+      const exists = current.some(r => r.user === payload.userId && r.react === payload.react);
+      if (exists) return;
+      entry.element.updateMessage({
+        reacts: [...current, { react: payload.react, user: payload.userId }],
+      });
+      return;
+    }
+
+    if (type === 'REACTION_REMOVED') {
+      const entry = messagesById.get(payload.messageId);
+      if (!entry) return;
+      const current = entry.element.message.reacts || [];
+      entry.element.updateMessage({
+        reacts: current.filter(
+          r => !(r.user === payload.userId && r.react === payload.react),
+        ),
+      });
+      return;
+    }
+  };
+
+  unsubscribers.push(subscribeChannel(currentChannelId, handleChannelEvent));
 
   unsubscribers.push(subSelectedChannelId(() => resetAndLoadMessages()));
   unsubscribers.push(subChannels(() => resetAndLoadMessages()));
